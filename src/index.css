@@ -1,0 +1,383 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=VT323&family=Roboto+Mono:wght@400;500&family=Press+Start+2P&display=swap');
+
+@theme {
+  --font-medieval: 'MedievalSharp', cursive;
+  --font-vt323: 'VT323', monospace;
+  --font-rogue-number: 'Press Start 2P', cursive;
+}
+
+body {
+  font-family: var(--font-medieval);
+  background-color: #020202;
+  color: #d1d5db;
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+}
+
+.font-serif-display {
+  font-family: var(--font-medieval);
+  font-weight: 700;
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+}
+
+.font-mono {
+  font-family: var(--font-vt323);
+}
+
+.font-rogue-number {
+  font-family: var(--font-rogue-number);
+}
+
+.pixel-text-shadow {
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+}
+
+.pixel-text-shadow-white {
+  text-shadow: 2px 2px 0px rgba(255,255,255,0.2);
+}
+
+/* Dark Medieval Vignette */
+.vignette::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(0,0,0,0.9) 100%);
+  z-index: 9998;
+  pointer-events: none;
+}
+
+/* CRT Scanline Effect */
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+  z-index: 9999;
+  background-size: 100% 3px, 3px 100%;
+  pointer-events: none;
+  opacity: 0.12;
+}
+
+.crt-overlay::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 100%);
+  background-size: 100% 200%;
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanline {
+  0% { background-position: 0 -100%; }
+  100% { background-position: 0 100%; }
+}
+
+/* Raylib UI Styles */
+.raylib-text {
+  font-family: 'VT323', monospace;
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.8);
+  letter-spacing: 0.05em;
+}
+
+.raylib-panel {
+  background: rgba(20, 20, 20, 0.9);
+  border: 1px solid #444;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+}
+
+.evil-glow {
+  filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.5));
+}
+
+.evil-glow-intense {
+  filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.8));
+}
+
+.ken-burns-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1519074063912-ad25b57b9d17?auto=format&fit=crop&q=80&w=2070');
+  background-size: cover;
+  background-position: center;
+  animation: ken-burns 60s linear infinite;
+  opacity: 0.15;
+  z-index: 0;
+  filter: sepia(0.5) contrast(1.2) brightness(0.5);
+}
+@keyframes ken-burns {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Scrollbar styling - Aged look */
+.custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+}
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #0a0a0a; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #450a0a; 
+    border: 1px solid #7f1d1d;
+    border-radius: 0px;
+}
+
+/* Card Sheen - Spectral Gold */
+.card-sheen::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(to right, rgba(180,83,9,0) 0%, rgba(251,191,36,0.15) 50%, rgba(180,83,9,0) 100%);
+  transform: rotate(25deg);
+  animation: sheen 6s infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes sheen {
+  0%, 70% { left: -75%; }
+  100% { left: 125%; }
+}
+
+/* Candle Flicker Effect */
+.candle-flicker {
+  animation: flicker 4s infinite;
+}
+
+/* Blood Drip Animations */
+@keyframes blood-drip-1 {
+  0% { height: 0; opacity: 0.8; }
+  25% { height: 20px; opacity: 0.8; }
+  50% { height: 20px; opacity: 0.8; }
+  75% { height: 0; opacity: 0; }
+  100% { height: 0; opacity: 0; }
+}
+.animate-blood-drip-1 {
+  animation: blood-drip-1 2s infinite;
+  animation-delay: 1s;
+}
+
+@keyframes blood-drip-2 {
+  0% { height: 0; opacity: 0.9; }
+  25% { height: 35px; opacity: 0.9; }
+  50% { height: 35px; opacity: 0.9; }
+  75% { height: 0; opacity: 0; }
+  100% { height: 0; opacity: 0; }
+}
+.animate-blood-drip-2 {
+  animation: blood-drip-2 3s infinite;
+  animation-delay: 0.5s;
+}
+
+/* Glitch Animation */
+@keyframes glitch {
+  0% { clip-path: inset(0 0 0 0); transform: translateX(-2px); }
+  20% { clip-path: inset(10% 0 80% 0); transform: translateX(2px); }
+  40% { clip-path: inset(0 0 0 0); transform: translateX(-1px); }
+  60% { clip-path: inset(80% 0 10% 0); transform: translateX(1px); }
+  80% { clip-path: inset(0 0 0 0); transform: translateX(0); }
+  100% { clip-path: inset(0 0 0 0); transform: translateX(0); }
+}
+.animate-glitch {
+  animation: glitch 0.2s infinite;
+  animation-delay: 3s;
+}
+
+/* Custom Pulse Animations */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-fast {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+.animate-pulse-fast {
+  animation: pulse-fast 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes sheen {
+  0% { transform: translateX(-100%); }
+  40% { transform: translateX(200%); }
+  100% { transform: translateX(200%); }
+}
+.animate-sheen {
+  animation: sheen 5s linear infinite;
+}
+
+@keyframes flame {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  50% { opacity: 1; transform: translateY(-15px) scale(1.5); }
+  100% { transform: translateY(-30px) scale(0.2); opacity: 0; }
+}
+.animate-flame {
+  animation: flame 0.8s ease-out infinite;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.2) rotate(-10deg); }
+  75% { transform: scale(1.2) rotate(10deg); }
+}
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+@keyframes boss-enraged {
+  0%, 100% { border-color: rgba(249, 115, 22, 0.4); box-shadow: 0 0 10px rgba(249, 115, 22, 0.3); }
+  50% { border-color: rgba(249, 115, 22, 0.8); box-shadow: 0 0 30px rgba(249, 115, 22, 0.6); }
+}
+.animate-boss-enraged {
+  animation: boss-enraged 1s ease-in-out infinite;
+}
+
+@keyframes boss-desperate {
+  0%, 100% { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+  50% { border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+}
+.animate-boss-desperate {
+  animation: boss-desperate 3s ease-in-out infinite;
+}
+
+@keyframes boss-elite {
+  0%, 100% { border-color: rgba(168, 85, 247, 0.3); box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); }
+  50% { border-color: rgba(168, 85, 247, 0.6); box-shadow: 0 0 25px rgba(168, 85, 247, 0.5); }
+}
+.animate-boss-elite {
+  animation: boss-elite 3s ease-in-out infinite;
+}
+
+
+/* Enhanced gameplay motion polish */
+.active-hand-aura {
+  box-shadow: 0 0 40px 5px rgba(220, 38, 38, 0.5), inset 0 0 20px rgba(220, 38, 38, 0.3);
+  background: linear-gradient(45deg, rgba(220, 38, 38, 0.05), transparent);
+}
+
+.deal-trail {
+  position: absolute;
+  inset: 12% 30% auto auto;
+  width: 70px;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent);
+  filter: blur(1px);
+  opacity: 0;
+  transform: rotate(-24deg);
+  animation: deal-trail-flash 0.42s ease-out 1;
+  z-index: -1;
+}
+
+@keyframes deal-trail-flash {
+  0% { opacity: 0.85; transform: translate(40px, -24px) rotate(-24deg) scaleX(1.8); }
+  100% { opacity: 0; transform: translate(-8px, 2px) rotate(-24deg) scaleX(0.25); }
+}
+
+.card-impact-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 14px;
+  border: 2px solid rgba(250, 204, 21, 0.9);
+  box-shadow: 0 0 18px rgba(250, 204, 21, 0.7), inset 0 0 15px rgba(250, 204, 21, 0.35);
+  pointer-events: none;
+  animation: card-impact-ring 0.48s ease-out forwards;
+  z-index: 30;
+}
+
+@keyframes card-impact-ring {
+  0% { transform: scale(0.88); opacity: 0.95; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+.modifier-card-frame::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 12px;
+  background: conic-gradient(from 0deg, rgba(239,68,68,0.0), rgba(250,204,21,0.45), rgba(139,92,246,0.45), rgba(239,68,68,0.0));
+  filter: blur(7px);
+  opacity: 0.5;
+  animation: modifier-orbit 3.5s linear infinite;
+  pointer-events: none;
+  z-index: -2;
+}
+
+.modifier-rune-sweep {
+  background: repeating-linear-gradient(110deg, transparent 0 14px, rgba(255,255,255,0.14) 15px, transparent 18px);
+  mix-blend-mode: overlay;
+  animation: rune-sweep 2.4s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes modifier-orbit {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.35; }
+  50% { opacity: 0.75; }
+  100% { transform: rotate(360deg) scale(1); opacity: 0.35; }
+}
+
+@keyframes rune-sweep {
+  0% { transform: translateX(-55%); }
+  100% { transform: translateX(55%); }
+}
+
+.card-face-down {
+  filter: drop-shadow(0 0 12px rgba(220,38,38,0.35));
+}
+
+.intro-card-rain {
+  background-image:
+    linear-gradient(115deg, transparent 0 42%, rgba(255,255,255,0.08) 44%, transparent 46%),
+    radial-gradient(circle at 20% 20%, rgba(220,38,38,0.16), transparent 18%),
+    radial-gradient(circle at 80% 30%, rgba(250,204,21,0.09), transparent 16%),
+    radial-gradient(circle at 45% 80%, rgba(255,255,255,0.08), transparent 14%);
+  background-size: 220px 220px, 360px 360px, 420px 420px, 500px 500px;
+  animation: intro-card-rain 18s linear infinite;
+}
+
+@keyframes intro-card-rain {
+  0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: 260px 520px, -180px 360px, 220px -260px, -340px -420px; }
+}
+
+.deck-count-glow {
+  background: linear-gradient(180deg, transparent, rgba(239,68,68,0.28), transparent);
+  animation: deck-count-glow 2s ease-in-out infinite;
+}
+
+@keyframes deck-count-glow {
+  0%, 100% { transform: translateY(-60%); opacity: 0.2; }
+  50% { transform: translateY(60%); opacity: 0.55; }
+}
