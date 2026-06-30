@@ -62,6 +62,22 @@ function usePrevious<T>(value: T): T | undefined {
   return ref.current;
 }
 
+function normalizeSavedGameState(savedState: any) {
+  if (Array.isArray(savedState?.dealerHand)) {
+    savedState.dealerHand = {
+      id: 0,
+      cards: savedState.dealerHand,
+      score: savedState.dealerHand.score ?? 0,
+      status: savedState.dealerHand.status ?? 'standing',
+      damageMultiplier: savedState.dealerHand.damageMultiplier ?? 1,
+      activeSynergies: savedState.dealerHand.activeSynergies ?? [],
+      flatDamageBonus: savedState.dealerHand.flatDamageBonus ?? 0,
+      isRevealed: savedState.dealerHand.isRevealed ?? false,
+    };
+  }
+  return savedState;
+}
+
 type CombatTextInfo = { id: number; value: number | string; type: 'player-damage' | 'boss-damage' | 'player-heal' | 'boss-heal' | 'shield' | 'xp-gain'; };
 
 export default function App() {
@@ -143,7 +159,7 @@ export default function App() {
     const [state, dispatch] = useReducer(gameReducer, undefined, () => {
     const saved = localStorage.getItem('blackjackRogueSave');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error("Failed to parse save:", e); }
+      try { return normalizeSavedGameState(JSON.parse(saved)); } catch (e) { console.error("Failed to parse save:", e); }
     }
     return createInitialState({ customization, totalCurrency, relicCurrency, runHistory, unlockedAchievementIds, hasCompletedTutorial, unlockedRelicIds, unlockedSkills } as any);
   });
