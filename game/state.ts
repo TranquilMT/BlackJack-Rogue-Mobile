@@ -820,6 +820,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
             const dealerCards = baseState.dealerHand.cards.map(c => ({...c, tell: c.tell ?? null}));
             const dealerHandRevealed = {
                 ...updateHand({ ...baseState.dealerHand, cards: dealerCards }, [], { ...baseState, dealerHand: { ...baseState.dealerHand, cards: dealerCards } }),
+                status: baseState.dealerHand.status,
                 isRevealed: true,
             };
             
