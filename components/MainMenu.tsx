@@ -39,8 +39,8 @@ const DashboardButton: React.FC<{
     badge?: string
 }> = ({ label, icon, onClick, delay, colorClass = "bg-stone-900 border-stone-800 text-stone-300", size = 'normal', badge }) => (
     <motion.button
-        initial={{ opacity: 0, x: -50, filter: 'blur(10px)' }}
-        animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ delay, type: 'spring', stiffness: 100, damping: 20 }}
         whileHover={{ 
             scale: 1.05, 

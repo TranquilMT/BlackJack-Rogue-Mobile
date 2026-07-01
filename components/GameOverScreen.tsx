@@ -24,12 +24,11 @@ const GameOverScreen = ({ onMainMenu, onTryAgain, runStats }: GameOverScreenProp
   };
 
   const letterVariants: Variants = {
-    hidden: { opacity: 0, y: 50, scale: 0.5, filter: 'blur(10px)' },
+    hidden: { opacity: 0, y: 50, scale: 0.5 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
-      filter: 'blur(0px)',
       transition: { type: 'spring', stiffness: 120, damping: 12 }
     }
   };

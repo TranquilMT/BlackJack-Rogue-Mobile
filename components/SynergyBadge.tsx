@@ -61,7 +61,7 @@ const SynergyBadge: React.FC<SynergyBadgeProps> = ({ synergy }) => {
     >
       <motion.div
         className={`absolute -inset-2 rounded-md ${colorClasses}`}
-        initial={{ opacity: 0.8, scale: 1.5, filter: 'blur(12px)' }}
+        initial={{ opacity: 0.8, scale: 1.5 }}
         animate={{ opacity: 0, scale: 1 }}
         transition={{ duration: 1, delay: 0.1, ease: "easeOut" }}
         style={{ zIndex: -1 }}

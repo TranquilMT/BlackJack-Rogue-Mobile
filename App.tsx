@@ -881,9 +881,9 @@ export default function App() {
         {appPhase === 'inGame' && (
             <motion.div 
                 key="game" 
-                initial={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }} 
-                animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} 
-                exit={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }} 
+                initial={{ opacity: 0, scale: 1.1 }} 
+                animate={{ opacity: 1, scale: 1 }} 
+                exit={{ opacity: 0, scale: 0.9 }} 
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="w-full h-full" 
                 style={{ perspective: '2000px' }}

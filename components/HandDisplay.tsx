@@ -118,8 +118,8 @@ const HandDisplay = React.memo(({ hand, isPlayer, isDealer, isActive, handIndex,
         { isPlayer && score > 0 &&
           <motion.div
             key={status + score + activeSynergies.length}
-            initial={{ scale: 0.5, opacity: 0, y: 20, filter: 'blur(5px)' }}
-            animate={{ scale: 1, opacity: 1, y: 0, filter: 'blur(0px)' }}
+            initial={{ scale: 0.5, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 15 }}
             className="flex flex-col items-center"
           >
@@ -175,7 +175,7 @@ const HandDisplay = React.memo(({ hand, isPlayer, isDealer, isActive, handIndex,
                     key={card.id}
                     layout="position"
                     className={`absolute ${card.modifier ? 'modifier-card-aura' : ''}`}
-                    initial={{ opacity: 0, x: entryX, y: entryY, scale: 0.18, rotate: isDealer ? -35 : 85, rotateY: isHidden ? 180 : 0, filter: 'blur(8px)' }}
+                    initial={{ opacity: 0, x: entryX, y: entryY, scale: 0.18, rotate: isDealer ? -35 : 85, rotateY: isHidden ? 180 : 0 }}
                     animate={{
                       opacity: 1,
                       x: index * CARD_SPREAD,
@@ -183,9 +183,8 @@ const HandDisplay = React.memo(({ hand, isPlayer, isDealer, isActive, handIndex,
                       rotate: finalRotate,
                       rotateY: 0,
                       scale: isLatestHit ? [0.96, 1.2, 1] : [0.98, 1.08, 1],
-                      filter: 'blur(0px)'
                     }}
-                    exit={{ opacity: 0, y: 180, scale: 0.3, rotate: -45, filter: 'blur(6px)', transition: { duration: 0.22 } }}
+                    exit={{ opacity: 0, y: 180, scale: 0.3, rotate: -45, transition: { duration: 0.22 } }}
                     transition={{
                         type: 'spring',
                         stiffness: isLatestHit ? 720 : 620,

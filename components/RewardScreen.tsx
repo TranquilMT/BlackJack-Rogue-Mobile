@@ -43,7 +43,7 @@ const RewardScreen = ({ choices, onSelect }: RewardScreenProps) => {
                     className="flex flex-col items-center justify-center cursor-pointer"
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 1.5, opacity: 0, filter: 'blur(10px)' }}
+                    exit={{ scale: 1.5, opacity: 0 }}
                     onClick={handleOpenChest}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

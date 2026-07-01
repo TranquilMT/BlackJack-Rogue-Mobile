@@ -21,7 +21,7 @@ const Intro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
       className="relative w-full h-full flex flex-col items-center justify-center p-6 bg-black cursor-pointer overflow-hidden select-none"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.6 } }}
-      exit={{ opacity: 0, scale: 1.04, filter: 'blur(10px)', transition: { duration: 0.8 } }}
+      exit={{ opacity: 0, scale: 1.04, transition: { duration: 0.8 } }}
       onClick={onComplete}
     >
       <motion.div
@@ -38,8 +38,8 @@ const Intro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
 
       <motion.div
         className="relative z-10 flex flex-col items-center"
-        initial={{ y: 40, opacity: 0, filter: 'blur(8px)' }}
-        animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, ease: 'easeOut' }}
       >
         <motion.div
