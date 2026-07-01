@@ -22,7 +22,7 @@ import CurseSelectionScreen from './components/CurseSelectionScreen';
 import Tutorial from './components/Tutorial';
 import AchievementToast from './components/AchievementToast';
 import { ACHIEVEMENTS } from './game/achievements';
-import type { RelicId, Hand, LootReward, LeaderboardEntry, SoundId, Pact, GameMode } from './types';
+import type { RelicId, Hand, LootReward, LeaderboardEntry, SoundId, Pact, GameMode, GameState } from './types';
 import { TableLighting, RelicId as RelicIdEnum, WheelOutcome, BoonId, LevelUpChoiceId } from './types';
 import BoonSelectionScreen from './components/BoonSelectionScreen';
 import SpinWheelScreen from './components/SpinWheelScreen';
@@ -62,20 +62,48 @@ function usePrevious<T>(value: T): T | undefined {
   return ref.current;
 }
 
-function normalizeSavedGameState(savedState: any) {
-  if (Array.isArray(savedState?.dealerHand)) {
-    savedState.dealerHand = {
-      id: 0,
-      cards: savedState.dealerHand,
-      score: savedState.dealerHand.score ?? 0,
-      status: savedState.dealerHand.status ?? 'standing',
-      damageMultiplier: savedState.dealerHand.damageMultiplier ?? 1,
-      activeSynergies: savedState.dealerHand.activeSynergies ?? [],
-      flatDamageBonus: savedState.dealerHand.flatDamageBonus ?? 0,
-      isRevealed: savedState.dealerHand.isRevealed ?? false,
-    };
+function normalizeSavedGameState(savedState: any, fallbackState: GameState): GameState | null {
+  if (!savedState || typeof savedState !== 'object') {
+    return null;
   }
-  return savedState;
+
+  const normalizedState: GameState = {
+    ...fallbackState,
+    ...savedState,
+    deck: Array.isArray(savedState.deck) ? savedState.deck : fallbackState.deck,
+    discardPile: Array.isArray(savedState.discardPile) ? savedState.discardPile : fallbackState.discardPile,
+    playerHands: Array.isArray(savedState.playerHands) ? savedState.playerHands : fallbackState.playerHands,
+    relics: Array.isArray(savedState.relics) ? savedState.relics : fallbackState.relics,
+    potions: Array.isArray(savedState.potions) ? savedState.potions : fallbackState.potions,
+    rewardChoices: Array.isArray(savedState.rewardChoices) ? savedState.rewardChoices : fallbackState.rewardChoices,
+    curseChoices: Array.isArray(savedState.curseChoices) ? savedState.curseChoices : fallbackState.curseChoices,
+    boonChoices: Array.isArray(savedState.boonChoices) ? savedState.boonChoices : fallbackState.boonChoices,
+    activeBoons: Array.isArray(savedState.activeBoons) ? savedState.activeBoons : fallbackState.activeBoons,
+    levelUpChoices: Array.isArray(savedState.levelUpChoices) ? savedState.levelUpChoices : fallbackState.levelUpChoices,
+    strangerChoices: Array.isArray(savedState.strangerChoices) ? savedState.strangerChoices : fallbackState.strangerChoices,
+  };
+
+  if (Array.isArray(savedState?.dealerHand)) {
+    normalizedState.dealerHand = {
+      ...fallbackState.dealerHand,
+      cards: savedState.dealerHand,
+    };
+  } else if (savedState.dealerHand && typeof savedState.dealerHand === 'object') {
+    normalizedState.dealerHand = {
+      ...fallbackState.dealerHand,
+      ...savedState.dealerHand,
+      cards: Array.isArray(savedState.dealerHand.cards) ? savedState.dealerHand.cards : fallbackState.dealerHand.cards,
+      activeSynergies: Array.isArray(savedState.dealerHand.activeSynergies) ? savedState.dealerHand.activeSynergies : fallbackState.dealerHand.activeSynergies,
+    };
+  } else {
+    normalizedState.dealerHand = fallbackState.dealerHand;
+  }
+
+  if (!normalizedState.gamePhase || !normalizedState.dealerHand || !Array.isArray(normalizedState.playerHands)) {
+    return null;
+  }
+
+  return normalizedState;
 }
 
 type CombatTextInfo = { id: number; value: number | string; type: 'player-damage' | 'boss-damage' | 'player-heal' | 'boss-heal' | 'shield' | 'xp-gain'; };
@@ -157,11 +185,18 @@ export default function App() {
     }, []);
 
     const [state, dispatch] = useReducer(gameReducer, undefined, () => {
+    const fallbackState = createInitialState({ customization, totalCurrency, relicCurrency, runHistory, unlockedAchievementIds, hasCompletedTutorial, unlockedRelicIds, unlockedSkills } as any);
     const saved = localStorage.getItem('blackjackRogueSave');
     if (saved) {
-      try { return normalizeSavedGameState(JSON.parse(saved)); } catch (e) { console.error("Failed to parse save:", e); }
+      try {
+        const normalizedSave = normalizeSavedGameState(JSON.parse(saved), fallbackState);
+        if (normalizedSave) return normalizedSave;
+      } catch (e) {
+        console.error("Failed to parse save:", e);
+      }
+      localStorage.removeItem('blackjackRogueSave');
     }
-    return createInitialState({ customization, totalCurrency, relicCurrency, runHistory, unlockedAchievementIds, hasCompletedTutorial, unlockedRelicIds, unlockedSkills } as any);
+    return fallbackState;
   });
 
   useEffect(() => {
@@ -761,7 +796,7 @@ export default function App() {
     <div className="relative w-full h-full overflow-hidden bg-black">
       <Toaster position="top-center" theme="dark" richColors />
       <div className={`absolute inset-0 z-[1000] pointer-events-none transition-opacity duration-300 ${screenFlash > 0 ? 'bg-red-600' : 'bg-transparent'}`} style={{ opacity: screenFlash }}></div>
-      {state.gamePhase !== 'cutscene' && (
+      {appPhase === 'inGame' && state.gamePhase !== 'cutscene' && (
         <>
           <VisualFXLayer slashes={slashes} splatters={splatters} onSlashComplete={handleSlashComplete} isBossStunned={isBossStunned} shockwaves={shockwaves} onShockwaveComplete={handleShockwaveComplete} />
           <ParticleSystem ref={particleSystemRef} />
