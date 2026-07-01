@@ -818,7 +818,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
             }
             
             const dealerCards = baseState.dealerHand.cards.map(c => ({...c, tell: c.tell ?? null}));
-            const dealerHandRevealed = updateHand({ ...baseState.dealerHand, cards: dealerCards }, [], { ...baseState, dealerHand: { ...baseState.dealerHand, cards: dealerCards } });
+            const dealerHandRevealed = {
+                ...updateHand({ ...baseState.dealerHand, cards: dealerCards }, [], { ...baseState, dealerHand: { ...baseState.dealerHand, cards: dealerCards } }),
+                isRevealed: true,
+            };
             
             if (baseState.isBossStunned) {
                 return { 
@@ -1828,6 +1831,9 @@ function dealCard(state: GameState): { card: Card; deck: Card[]; discardPile: Ca
   if (currentDeck.length === 0) {
     currentDeck = shuffleDeck(currentDiscard);
     currentDiscard = [];
+  }
+  if (currentDeck.length === 0) {
+    currentDeck = shuffleDeck(createDeck(state.unlockedModifierCardIds));
   }
   const card = currentDeck.pop()!;
   

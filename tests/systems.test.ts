@@ -5,6 +5,7 @@ import { getActiveSynergies, SYNERGIES } from '../game/synergies';
 import {
   BoonId,
   CardModifierId,
+  DealerArchetype,
   GameState,
   Hand,
   HandStatus,
@@ -100,6 +101,62 @@ const aceLowStraightFlush = hand([
   { id: '3', rank: Rank.Three, suit: Suit.Hearts },
 ]);
 assert.equal(getActiveSynergies(aceLowStraightFlush).some(s => s.id === SynergyId.StraightFlush), true);
+
+{
+  const state = {
+    ...baseState(),
+    gamePhase: 'playerTurn' as const,
+    dealerArchetype: DealerArchetype.Balanced,
+    playerHands: [hand([
+      { id: 'p1', rank: Rank.Two, suit: Suit.Hearts },
+      { id: 'p2', rank: Rank.Six, suit: Suit.Clubs },
+    ], { status: HandStatus.Hitting })],
+    dealerHand: hand([
+      { id: 'd1', rank: Rank.Ten, suit: Suit.Spades },
+      { id: 'd2', rank: Rank.Seven, suit: Suit.Clubs },
+    ], { id: 0 }),
+    deck: [
+      { id: 'next-four', rank: Rank.Four, suit: Suit.Diamonds },
+    ],
+  };
+
+  const afterHit = gameReducer(state, { type: 'HIT' });
+  assert.equal(afterHit.playerHands[0].score, 12);
+  assert.equal(afterHit.playerHands[0].status, HandStatus.Hitting);
+
+  const afterStand = gameReducer(afterHit, { type: 'STAND' });
+  assert.equal(afterStand.playerHands[0].score, 12);
+  assert.equal(afterStand.playerHands[0].status, HandStatus.Standing);
+  assert.equal(afterStand.dealerHand.isRevealed, true);
+
+  const afterDealer = gameReducer(afterStand, { type: 'DEALER_TURN_ACTION' });
+  assert.equal(afterDealer.gamePhase, 'gameOver');
+  assert.equal(afterDealer.playerHands[0].status, HandStatus.Standing);
+}
+
+{
+  const state = {
+    ...baseState(),
+    gamePhase: 'dealerTurn' as const,
+    dealerArchetype: DealerArchetype.Aggressive,
+    playerHands: [hand([
+      { id: 'p1', rank: Rank.Two, suit: Suit.Hearts },
+      { id: 'p2', rank: Rank.Six, suit: Suit.Clubs },
+      { id: 'p3', rank: Rank.Four, suit: Suit.Diamonds },
+    ], { status: HandStatus.Standing })],
+    dealerHand: hand([
+      { id: 'd1', rank: Rank.Ten, suit: Suit.Spades },
+      { id: 'd2', rank: Rank.Seven, suit: Suit.Clubs },
+    ], { id: 0, status: HandStatus.Hitting }),
+    deck: [],
+    discardPile: [],
+  };
+
+  const next = gameReducer(state, { type: 'DEALER_TURN_ACTION' });
+  assert.equal(next.dealerHand.cards.every(Boolean), true);
+  assert.equal(next.dealerHand.cards.length >= 3, true);
+  assert.equal(next.deck.length > 0, true);
+}
 
 {
   const state = {
