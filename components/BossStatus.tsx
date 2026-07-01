@@ -62,7 +62,7 @@ const StatBar = ({ value, max, colorFrom, colorTo, isDesperate, isEnraged }: { v
     }, [value, lastValue, percentage, lastPercentage]);
 
     return (
-        <div className={`relative w-full bg-black/50 rounded-md h-4 md:h-5 mt-1 overflow-hidden border ${isEnraged ? 'border-orange-500 shadow-[0_0_15px_#f97316]' : isDesperate ? 'border-red-400/80' : 'border-white/10'}`}>
+        <div className={`relative w-full bg-black/70 rounded-md h-4 md:h-5 mt-1 overflow-hidden border ${isEnraged ? 'border-orange-500 shadow-[0_0_15px_#f97316]' : isDesperate ? 'border-red-400/80' : 'border-amber-500/10'} shadow-inner`}>
             {/* Drain Bar */}
             <motion.div
               className="absolute top-0 left-0 h-full bg-red-300 opacity-50"
@@ -142,12 +142,12 @@ const BossStatus = React.memo(({ hp, maxHp, shield, isDesperate, floor, intent, 
 
   return (
     <motion.div 
-      className={`boss-status-highlight absolute top-2 right-2 md:top-4 md:right-4 z-50 text-white bg-black/60 p-1.5 md:p-3 rounded-lg shadow-lg w-[42%] max-w-[160px] md:max-w-none md:w-64 border ${animationClass}`}
+      className={`boss-status-highlight rogue-panel absolute top-2 right-2 md:top-4 md:right-4 z-50 text-white p-1.5 md:p-3 rounded-xl w-[42%] max-w-[160px] md:max-w-none md:w-64 ${animationClass}`}
       animate={controls}
-      style={!animationClass ? { borderColor: 'rgba(255, 255, 255, 0.1)', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)' } : {}}
+      style={!animationClass ? { borderColor: 'rgba(248, 196, 92, 0.18)' } : {}}
     >
       <div className="flex justify-between items-baseline relative z-10">
-        <h3 className="text-[8px] md:text-sm font-bold text-gray-400">F {floor} - S {currentStage}</h3>
+        <h3 className="text-[8px] md:text-sm font-bold text-stone-400 uppercase tracking-widest">F {floor} - S {currentStage}</h3>
         <h2 className={`text-xs md:text-lg font-bold font-serif-display tracking-wider ${isEnraged ? 'text-orange-500' : isElite ? 'text-purple-400' : isMajor ? 'text-red-600' : 'text-red-400'}`}>
             {isEnraged ? 'DEMON' : isElite ? 'Elite' : isMajor ? 'Boss' : 'Dealer'}
         </h2>
