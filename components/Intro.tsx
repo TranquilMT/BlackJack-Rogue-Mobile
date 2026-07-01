@@ -1,11 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 const Intro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
+  const onCompleteRef = useRef(onComplete);
+
   useEffect(() => {
-    const timer = setTimeout(onComplete, 4200);
-    return () => clearTimeout(timer);
+    onCompleteRef.current = onComplete;
   }, [onComplete]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => onCompleteRef.current(), 4200);
+    return () => clearTimeout(timer);
+  }, []);
 
   const title = 'BLACKJACK ROGUE';
 
