@@ -1,18 +1,15 @@
 
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
-import type { Action } from '../game/state';
-import type { GameMode } from '../types';
 import { audioManager } from '../services/audioManager';
 
 interface VictoryScreenProps {
-  dispatch: React.Dispatch<Action>;
   onMainMenu: () => void;
+  onPlayAgain: () => void;
   message?: string;
-  mode?: GameMode;
 }
 
-const VictoryScreen = ({ dispatch, onMainMenu, message = "VICTORY", mode = 'endless' }: VictoryScreenProps) => {
+const VictoryScreen = ({ onMainMenu, onPlayAgain, message = "VICTORY" }: VictoryScreenProps) => {
   const sentence = message.split("");
 
   const containerVariants: Variants = {
@@ -24,12 +21,11 @@ const VictoryScreen = ({ dispatch, onMainMenu, message = "VICTORY", mode = 'endl
   };
 
   const letterVariants: Variants = {
-    hidden: { opacity: 0, y: -50, scale: 0.5, filter: 'blur(10px)' },
+    hidden: { opacity: 0, y: -50, scale: 0.5 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
-      filter: 'blur(0px)',
       transition: { type: 'spring', stiffness: 120, damping: 10 }
     }
   };
@@ -97,7 +93,7 @@ const VictoryScreen = ({ dispatch, onMainMenu, message = "VICTORY", mode = 'endl
           whileTap={{ scale: 0.95 }}
           onClick={() => {
               audioManager.playSound('button-click');
-              dispatch({ type: 'START_NEW_RUN', mode });
+              onPlayAgain();
           }}
           className="mt-12 px-8 py-4 bg-yellow-500 text-gray-900 font-bold text-2xl rounded-md shadow-lg hover:bg-yellow-400"
         >

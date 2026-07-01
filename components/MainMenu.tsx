@@ -21,7 +21,7 @@ import QuestScreen from './QuestScreen';
 
 interface MainMenuProps {
   onPlay: (startingRelicId?: RelicId | null, mode?: GameMode) => void;
-  onStartTutorial: () => void;
+  onStartTutorial: (returnMode?: GameMode) => void;
   onEnterMultiplayer: () => void;
   setShowPatchNotes: (show: boolean) => void;
   onOpenSkillTree: () => void;
@@ -39,8 +39,8 @@ const DashboardButton: React.FC<{
     badge?: string
 }> = ({ label, icon, onClick, delay, colorClass = "bg-stone-900 border-stone-800 text-stone-300", size = 'normal', badge }) => (
     <motion.button
-        initial={{ opacity: 0, x: -50, filter: 'blur(10px)' }}
-        animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ delay, type: 'spring', stiffness: 100, damping: 20 }}
         whileHover={{ 
             scale: 1.05, 
@@ -354,7 +354,7 @@ const MainMenu = ({ onPlay, onStartTutorial, onEnterMultiplayer, setShowPatchNot
                         <button 
                             onClick={() => {
                                 setShowTutorialPrompt(false);
-                                onStartTutorial();
+                                onStartTutorial(selectedMode);
                             }}
                             className="w-full py-3 md:py-4 bg-amber-700 hover:bg-amber-600 text-stone-100 font-black rounded-lg uppercase tracking-widest transition-colors shadow-lg border border-amber-500/30"
                         >

@@ -269,6 +269,10 @@ const Card = React.memo(({ card, style, className, isActive, cardBack = 'default
 
 
   const modStyles = modifier ? getModifierStyles(modifier) : null;
+  const hoverRotateY = useMemo(() => {
+    const seed = String(card.id).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return ((seed % 100) / 100 - 0.5) * 15;
+  }, [card.id]);
 
   return (
     <motion.div
@@ -292,7 +296,7 @@ const Card = React.memo(({ card, style, className, isActive, cardBack = 'default
         scale: 1.3,
         y: -25,
         rotateX: 15,
-        rotateY: (Math.random() - 0.5) * 15, // Slight random tilt
+        rotateY: hoverRotateY,
         zIndex: 50,
         boxShadow: '0 25px 30px -5px rgba(0, 0, 0, 0.6), 0 15px 15px -5px rgba(0, 0, 0, 0.4)'
       }}

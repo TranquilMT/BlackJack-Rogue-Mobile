@@ -163,12 +163,12 @@ body {
   height: 200%;
   background: linear-gradient(to right, rgba(180,83,9,0) 0%, rgba(251,191,36,0.15) 50%, rgba(180,83,9,0) 100%);
   transform: rotate(25deg);
-  animation: sheen 6s infinite;
+  animation: card-sheen-sweep 6s infinite;
   pointer-events: none;
   z-index: 1;
 }
 
-@keyframes sheen {
+@keyframes card-sheen-sweep {
   0%, 70% { left: -75%; }
   100% { left: 125%; }
 }
@@ -234,13 +234,13 @@ body {
   animation: pulse-fast 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes sheen {
+@keyframes ui-sheen {
   0% { transform: translateX(-100%); }
   40% { transform: translateX(200%); }
   100% { transform: translateX(200%); }
 }
 .animate-sheen {
-  animation: sheen 5s linear infinite;
+  animation: ui-sheen 5s linear infinite;
 }
 
 @keyframes flame {

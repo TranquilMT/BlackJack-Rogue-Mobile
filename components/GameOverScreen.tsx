@@ -1,18 +1,17 @@
 
 import React, { useState } from 'react';
 import { motion, Variants, AnimatePresence } from 'framer-motion';
-import type { Action } from '../game/state';
 import type { RunStats } from '../types';
 import RunSummaryScreen from './RunSummaryScreen';
 import { audioManager } from '../services/audioManager';
 
 interface GameOverScreenProps {
-  dispatch: React.Dispatch<Action>;
   onMainMenu: () => void;
+  onTryAgain: () => void;
   runStats: RunStats;
 }
 
-const GameOverScreen = ({ dispatch, onMainMenu, runStats }: GameOverScreenProps) => {
+const GameOverScreen = ({ onMainMenu, onTryAgain, runStats }: GameOverScreenProps) => {
   const [showSummary, setShowSummary] = useState(false);
   const sentence = "DEFEATED".split("");
 
@@ -25,12 +24,11 @@ const GameOverScreen = ({ dispatch, onMainMenu, runStats }: GameOverScreenProps)
   };
 
   const letterVariants: Variants = {
-    hidden: { opacity: 0, y: 50, scale: 0.5, filter: 'blur(10px)' },
+    hidden: { opacity: 0, y: 50, scale: 0.5 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
-      filter: 'blur(0px)',
       transition: { type: 'spring', stiffness: 120, damping: 12 }
     }
   };
@@ -128,7 +126,7 @@ const GameOverScreen = ({ dispatch, onMainMenu, runStats }: GameOverScreenProps)
           whileTap={{ scale: 0.95 }}
           onClick={() => {
               audioManager.playSound('button-click');
-              dispatch({ type: 'START_NEW_RUN' });
+              onTryAgain();
           }}
           className="px-6 py-3 bg-yellow-500 text-gray-900 font-bold text-xl rounded-md shadow-lg hover:bg-yellow-400"
         >
