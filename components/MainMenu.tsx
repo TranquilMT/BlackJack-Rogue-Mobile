@@ -157,19 +157,15 @@ const MainMenu = ({ onPlay, onStartTutorial, onEnterMultiplayer, setShowPatchNot
   const [selectedMode, setSelectedMode] = useState<GameMode>('endless');
   
   const handleStartRunClick = (mode: GameMode) => {
-      console.log('handleStartRunClick', { mode, hasCompletedTutorial, runHistoryLength: runHistory.length });
       setSelectedMode(mode);
       if (mode === 'campaign' && (!hasCompletedTutorial || runHistory.length === 0)) {
-          console.log('Showing tutorial prompt');
           setShowTutorialPrompt(true);
       } else {
-          console.log('Proceeding to game setup');
           proceedToGameSetup(mode);
       }
   };
 
   const proceedToGameSetup = (mode: GameMode) => {
-      console.log('proceedToGameSetup', { mode });
       setMenuView('relicSelect');
   };
 

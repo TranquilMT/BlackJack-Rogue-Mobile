@@ -271,7 +271,7 @@ export default function App() {
       setShowDailyReward(true);
       setLastLoginDate(today);
     }
-    getSteamService().getLeaderboard().then(lb => console.log("Steam Leaderboard:", lb));
+    getSteamService().getLeaderboard();
   }, []);
 
   // Player HP Effects
@@ -538,18 +538,14 @@ export default function App() {
   const handleGoToMainMenu = () => setAppPhase('mainMenu');
 
   const handlePlay = (startingRelicId?: RelicId | null, mode: GameMode = 'endless') => {
-    console.log('App handlePlay starting', { startingRelicId, mode });
     try {
       audioManager.resume();
       audioManager.playSound('button-click');
       
-      console.log('handlePlay: clearing save and setting state');
       localStorage.removeItem('blackjackRogueSave');
       hasHandledRunEndRef.current = false; // Reset the guard for the new run
       const metaState = useStore.getState();
-      console.log('handlePlay: dispatching START_NEW_RUN');
       dispatch({ type: 'START_NEW_RUN', startingRelicId: startingRelicId || undefined, metaState, mode });
-      console.log('handlePlay: setting appPhase to inGame');
       setAppPhase('inGame');
     } catch (error) {
       console.error('Error in handlePlay:', error);

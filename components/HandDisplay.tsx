@@ -172,7 +172,7 @@ const HandDisplay = React.memo(({ hand, isPlayer, isDealer, isActive, handIndex,
 
             return (
                 <motion.div
-                    key={`${card.id}-${isHidden ? 'hidden' : 'shown'}`}
+                    key={card.id}
                     layout="position"
                     className={`absolute ${card.modifier ? 'modifier-card-aura' : ''}`}
                     initial={{ opacity: 0, x: entryX, y: entryY, scale: 0.18, rotate: isDealer ? -35 : 85, rotateY: isHidden ? 180 : 0, filter: 'blur(8px)' }}

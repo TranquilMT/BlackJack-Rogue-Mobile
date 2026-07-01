@@ -3,6 +3,9 @@ apply plugin: 'com.android.application'
 android {
     namespace = "com.tranquilmt.blackjackrogue"
     compileSdk = rootProject.ext.compileSdkVersion
+    def releaseStoreFile = System.getenv("BJR_RELEASE_STORE_FILE")
+    def hasReleaseSigning = releaseStoreFile && file(releaseStoreFile).exists()
+
     defaultConfig {
         applicationId "com.tranquilmt.blackjackrogue"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -16,10 +19,28 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                storeFile file(releaseStoreFile)
+                storePassword System.getenv("BJR_RELEASE_STORE_PASSWORD")
+                keyAlias System.getenv("BJR_RELEASE_KEY_ALIAS")
+                keyPassword System.getenv("BJR_RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         release {
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
+            outputFileName = variant.buildType.name == "release" ? "BJRogue.apk" : "BJRogue-${variant.buildType.name}.apk"
         }
     }
 }

@@ -18,15 +18,12 @@ const RelicSelectScreen: React.FC<RelicSelectScreenProps> = ({ onSelect, onBack 
 
   const handleStart = () => {
     try {
-      console.log('RelicSelectScreen handleStart', { selectedRelic });
       audioManager.playSound('button-click');
       onSelect(selectedRelic);
     } catch (error) {
       console.error('Error in handleStart:', error);
     }
   };
-
-  console.log('RelicSelectScreen render', { selectedRelic, availableRelics });
 
   return (
     <motion.div

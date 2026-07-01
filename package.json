@@ -10,7 +10,8 @@
     "lint": "tsc --noEmit",
     "test:systems": "tsx tests/systems.test.ts",
     "android:sync": "npm run build && cap sync android",
-    "android:build:debug": "npm run android:sync && cd android && ./gradlew assembleDebug"
+    "android:build:debug": "npm run android:sync && cd android && ./gradlew assembleDebug",
+    "android:build:official": "npm run android:sync && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.1",
