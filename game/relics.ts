@@ -206,4 +206,24 @@ export const RELICS: Record<RelicId, Relic> = {
         name: 'Mirror Shard',
         description: 'When you get a Blackjack, gain 10 Shield.',
     },
+    [RelicId.BRASS_LANTERN]: {
+        id: RelicId.BRASS_LANTERN,
+        name: 'Brass Lantern',
+        description: 'On boss stages, the Dealer\'s hidden card starts revealed.',
+    },
+    [RelicId.THORNED_ROSARY]: {
+        id: RelicId.THORNED_ROSARY,
+        name: 'Thorned Rosary',
+        description: 'Whenever you take unblocked damage, deal 5 damage back to the Dealer.',
+    },
+    [RelicId.ASTRAL_COMPASS]: {
+        id: RelicId.ASTRAL_COMPASS,
+        name: 'Astral Compass',
+        description: 'The first Hit each hand grants 2 Focus.',
+    },
+    [RelicId.SAPPHIRE_CHALICE]: {
+        id: RelicId.SAPPHIRE_CHALICE,
+        name: 'Sapphire Chalice',
+        description: 'After winning at least one hand, gain 3 Shield.',
+    },
 };

@@ -32,6 +32,7 @@ import LevelUpScreen from './components/LevelUpScreen';
 import { audioManager } from './services/audioManager';
 import Intro from './components/Intro';
 import { useStore } from './store/useStore';
+import { RELICS } from './game/relics';
 import PlayerNameInputScreen from './components/PlayerNameInputScreen';
 import DailyRewardScreen from './components/DailyRewardScreen';
 import PlinkoScreen from './components/PlinkoScreen';
@@ -73,7 +74,11 @@ function normalizeSavedGameState(savedState: any, fallbackState: GameState): Gam
     deck: Array.isArray(savedState.deck) ? savedState.deck : fallbackState.deck,
     discardPile: Array.isArray(savedState.discardPile) ? savedState.discardPile : fallbackState.discardPile,
     playerHands: Array.isArray(savedState.playerHands) ? savedState.playerHands : fallbackState.playerHands,
-    relics: Array.isArray(savedState.relics) ? savedState.relics : fallbackState.relics,
+    relics: Array.isArray(savedState.relics)
+      ? savedState.relics
+          .map((relic: any) => relic?.id ? RELICS[relic.id as RelicId] : null)
+          .filter(Boolean)
+      : fallbackState.relics,
     potions: Array.isArray(savedState.potions) ? savedState.potions : fallbackState.potions,
     rewardChoices: Array.isArray(savedState.rewardChoices) ? savedState.rewardChoices : fallbackState.rewardChoices,
     curseChoices: Array.isArray(savedState.curseChoices) ? savedState.curseChoices : fallbackState.curseChoices,
@@ -797,7 +802,7 @@ export default function App() {
       {gamePhase === 'tutorial' && <Tutorial dispatch={dispatch} state={state} onComplete={handleCompleteTutorial} activeHandPosition={activeHandPosition} />}
       {gamePhase === 'defeat' && <GameOverScreen runStats={runStats} onMainMenu={handleGoToMainMenu} onTryAgain={() => handlePlay(null, state.mode)} />}
       {gamePhase === 'victory' && <VictoryScreen onMainMenu={handleGoToMainMenu} onPlayAgain={() => handlePlay(null, state.mode)} message={state.message === 'Campaign Complete!' ? 'CAMPAIGN COMPLETE' : 'VICTORY'} />}
-      {gamePhase === 'reward' && <RewardScreen choices={rewardChoices} onSelect={handleSelectReward} />}
+      {gamePhase === 'reward' && <RewardScreen choices={rewardChoices} onSelect={handleSelectReward} onSkip={() => dispatch({ type: 'SKIP_REWARD' })} />}
       {gamePhase === 'strangerEncounter' && <StrangerEncounterScreen choices={strangerChoices} onSelect={(pact: Pact) => dispatch({ type: 'SELECT_PACT', pact })} />}
       {gamePhase === 'curseSelection' && <CurseSelectionScreen choices={curseChoices} onSelect={(curseId) => dispatch({ type: 'SELECT_CURSE', curseId })} />}
       {gamePhase === 'boonSelection' && <BoonSelectionScreen choices={boonChoices} onSelect={(boonId: BoonId) => dispatch({ type: 'SELECT_BOON', boonId })} />}

@@ -32,6 +32,7 @@ export type Action =
   | { type: 'RESTART_GAME', metaState?: MetaState, mode?: GameMode }
   | { type: 'USE_POTION', potionId: PotionId }
   | { type: 'SELECT_REWARD', relicId: RelicId }
+  | { type: 'SKIP_REWARD' }
   | { type: 'SELECT_CURSE', curseId: CurseId }
   | { type: 'AWARD_LOOT', rewards: { potionCharges?: number; shards?: number; relicCurrency?: number; triggerWheel?: boolean } }
   | { type: 'SELECT_BOON', boonId: BoonId }
@@ -471,6 +472,7 @@ function dealInitialHands(state: GameState): GameState {
     const shouldRevealDealer =
         finalPlayerCards.some(c => c.modifier === CardModifierId.THE_ORACLE) ||
         tempState.relics.some(r => r.id === RelicId.ScryingOrb) ||
+        (tempState.currentStage % 3 === 0 && tempState.relics.some(r => r.id === RelicId.BRASS_LANTERN)) ||
         (tempState.relics.some(r => r.id === RelicId.AbyssalEye) && playerHand.score <= 10);
 
     const dealerHand = {
@@ -524,21 +526,15 @@ function dealInitialHands(state: GameState): GameState {
 }
 
 function getRandomRelics(count: number, unlockedIds: RelicId[], currentRelics: Relic[]): Relic[] {
-    const currentIds = new Set(currentRelics.map(r => r.id));
-    const availableIds = Array.from(new Set(unlockedIds.filter(id => !currentIds.has(id))));
-    
-    // If we don't have enough unlocked relics, fallback to some defaults
-    if (availableIds.length < count) {
-        const defaults = [RelicId.GamblersFallacy, RelicId.GoldenKnuckles, RelicId.VampiricFangs, RelicId.FirstAidKit, RelicId.Hourglass];
-        for (const id of defaults) {
-            if (!currentIds.has(id) && !availableIds.includes(id)) {
-                availableIds.push(id);
-            }
-        }
-    }
+    const currentIds = new Set(currentRelics.filter(Boolean).map(r => r.id));
+    const allRewardIds = Object.values(RELICS)
+        .filter(relic => !relic.isForged)
+        .map(relic => relic.id);
+    const availableIds = Array.from(new Set([...unlockedIds, ...allRewardIds]))
+        .filter(id => RELICS[id] && !currentIds.has(id));
 
     const shuffled = [...availableIds].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count).map(id => RELICS[id] || RELICS[RelicId.GamblersFallacy]);
+    return shuffled.slice(0, count).map(id => RELICS[id]);
 }
 
 export function createInitialState(metaState: MetaState, mode: GameMode = 'endless'): GameState {
@@ -690,6 +686,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
             
             const drawChain = processDrawChain(tempState, deal.card, activeHand);
             let newState = drawChain.newState;
+            const astralFocusGain = activeHand.cards.length === 2 && newState.relics.some(r => r.id === RelicId.ASTRAL_COMPASS) ? 2 : 0;
             
             const updatedHand = updateHand(activeHand, drawChain.finalCards, newState);
             const newHands = [...newState.playerHands];
@@ -698,7 +695,8 @@ export function gameReducer(state: GameState, action: Action): GameState {
             const finalState = {
                 ...newState,
                 playerHands: newHands,
-                message: `${hitCostMessage}${drawChain.messages.join(' ')}`.trim() || state.message,
+                focus: Math.min(newState.maxFocus, newState.focus + astralFocusGain),
+                message: `${hitCostMessage}${drawChain.messages.join(' ')}${astralFocusGain > 0 ? ' Astral Compass: +2 Focus.' : ''}`.trim() || state.message,
             };
 
             // Abyssal Eye: Reveal dealer card if score <= 10
@@ -1173,6 +1171,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
             if (hasWonAtLeastOneHand) {
                 newWinStreak++;
+                if (state.relics.some(r => r.id === RelicId.SAPPHIRE_CHALICE)) {
+                    shieldGain += 3;
+                    allModMessages.push('Sapphire Chalice: +3 Shield.');
+                }
             } else if (hasLostAtLeastOneHand) {
                 newWinStreak = 0;
                 newMaxHP -= 2;
@@ -1195,7 +1197,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
             if (Math.floor(healing) > 0) resolutionMessageParts.push(`Healed ${Math.floor(healing)} HP.`);
             if (shieldGain > 0) resolutionMessageParts.push(`Gained ${shieldGain} Shield.`);
             if (shardsGained > 0) resolutionMessageParts.push(`Earned ${shardsGained} Shards.`);
-            const resolutionMessage = resolutionMessageParts.length > 0 ? resolutionMessageParts.join(' ') : 'Round resolved.';
+            let resolutionMessage = resolutionMessageParts.length > 0 ? resolutionMessageParts.join(' ') : 'Round resolved.';
             
             newPlayerHP = Math.min(newPlayerHP, newMaxHP);
 
@@ -1217,6 +1219,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
             if (Math.floor(actualBossDamage) > 0) resolutionMessageParts.push(`Took ${Math.floor(actualBossDamage)} damage.`);
             newPlayerHP -= Math.floor(actualBossDamage);
+            if (Math.floor(actualBossDamage) > 0 && state.relics.some(r => r.id === RelicId.THORNED_ROSARY)) {
+                newBossHP -= 5;
+                resolutionMessageParts.push('Thorned Rosary dealt 5 damage back.');
+            }
+            resolutionMessage = resolutionMessageParts.length > 0 ? resolutionMessageParts.join(' ') : 'Round resolved.';
             
             const xpGained = totalPlayerDamage > 0 ? Math.floor(totalPlayerDamage / 2) : 5;
             let newXP = state.playerXP + xpGained;
@@ -1517,8 +1524,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
             return { ...newState, gamePhase: state.returnPhase || 'reward', returnPhase: undefined };
         }
 
-        case 'SELECT_REWARD': {
-             const relic = RELICS[action.relicId];
+        case 'SELECT_REWARD':
+        case 'SKIP_REWARD': {
+             const selectedRelic = action.type === 'SELECT_REWARD' ? RELICS[action.relicId] : undefined;
+             const shouldAddRelic = selectedRelic && !state.relics.some(r => r?.id === selectedRelic.id);
+             const nextRelics = shouldAddRelic ? [...state.relics, selectedRelic] : state.relics.filter(Boolean);
              let newStage = state.currentStage + 1;
              let newFloor = state.currentFloor;
              
@@ -1535,7 +1545,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
                      if (newFloor > 5) {
                          return {
                              ...state,
-                             relics: [...state.relics, relic],
+                             relics: nextRelics,
                              gamePhase: 'cutscene',
                              currentCutscene: CAMPAIGN_STORY['victory'],
                              message: 'Campaign Complete!',
@@ -1554,7 +1564,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
                      
                      return {
                          ...state,
-                         relics: [...state.relics, relic],
+                         relics: nextRelics,
                          currentFloor: newFloor,
                          currentStage: newStage,
                          gamePhase: 'cutscene',
@@ -1592,7 +1602,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
              const nextState = { 
                  ...state, 
-                 relics: [...state.relics, relic],
+                 relics: nextRelics,
                  currentFloor: newFloor,
                  currentStage: newStage,
                  bossHP: newBossMaxHP,

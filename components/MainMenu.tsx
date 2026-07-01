@@ -327,7 +327,7 @@ const MainMenu = ({ onPlay, onStartTutorial, onEnterMultiplayer, setShowPatchNot
                 <DashboardButton label="What's New" icon="📢" onClick={() => setShowPatchNotes(true)} delay={1.0} colorClass="bg-black border-stone-900 text-stone-600 hover:text-stone-400 hover:border-stone-700" />
                 
                 <div className="col-span-2 md:col-span-4 text-center mt-12 opacity-20">
-                    <p className="text-[10px] text-red-900 font-serif-display tracking-[0.8em] uppercase">Sovereign Epoch v4.0.0</p>
+                    <p className="text-[10px] text-red-900 font-serif-display tracking-[0.8em] uppercase">Sovereign Epoch v4.1.1</p>
                 </div>
             </div>
           </motion.div>

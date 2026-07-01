@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def bjRogueVersionName = "1.01"
+
 android {
     namespace = "com.tranquilmt.blackjackrogue"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -10,8 +12,8 @@ android {
         applicationId "com.tranquilmt.blackjackrogue"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName bjRogueVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -40,7 +42,7 @@ android {
     }
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
-            outputFileName = variant.buildType.name == "release" ? "BJRogue.apk" : "BJRogue-${variant.buildType.name}.apk"
+            outputFileName = variant.buildType.name == "release" ? "BJRogue-v${bjRogueVersionName}.apk" : "BJRogue-v${bjRogueVersionName}-${variant.buildType.name}.apk"
         }
     }
 }

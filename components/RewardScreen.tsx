@@ -10,9 +10,10 @@ import RelicAsset from './RelicAsset';
 interface RewardScreenProps {
   choices: Relic[];
   onSelect: (relicId: RelicId) => void;
+  onSkip: () => void;
 }
 
-const RewardScreen = ({ choices, onSelect }: RewardScreenProps) => {
+const RewardScreen = ({ choices, onSelect, onSkip }: RewardScreenProps) => {
   const [isChestOpen, setIsChestOpen] = useState(false);
   const [inspectingRelic, setInspectingRelic] = useState<Relic | null>(null);
 
@@ -92,8 +93,22 @@ const RewardScreen = ({ choices, onSelect }: RewardScreenProps) => {
                         Choose Your Relic
                     </motion.h2>
 
+                    {choices.length === 0 ? (
+                      <div className="w-full max-w-md rogue-panel p-8 rounded-2xl border border-yellow-500/30 text-center">
+                        <h3 className="text-2xl font-bold text-yellow-200 mb-3">Vault Exhausted</h3>
+                        <p className="text-sm text-gray-400 mb-6">No new relics remain in this reward pool. Continue deeper into the run.</p>
+                        <motion.button
+                          onClick={onSkip}
+                          className="w-full py-4 bg-yellow-600 hover:bg-yellow-500 text-black font-black rounded-xl text-lg uppercase tracking-widest transition-all shadow-xl"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Continue
+                        </motion.button>
+                      </div>
+                    ) : (
                     <div className="w-full max-w-2xl">
-                      <div className="grid grid-cols-3 gap-2 md:gap-6">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6">
                           <AnimatePresence>
                               {choices.map((relic, index) => (
                                   <motion.div
@@ -125,6 +140,7 @@ const RewardScreen = ({ choices, onSelect }: RewardScreenProps) => {
                           </AnimatePresence>
                       </div>
                     </div>
+                    )}
                 </motion.div>
             )}
         </AnimatePresence>

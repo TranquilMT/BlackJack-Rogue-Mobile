@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { createInitialState, gameReducer } from '../game/state';
 import { calculateHandScore } from '../game/logic';
+import { RELICS } from '../game/relics';
 import { getActiveSynergies, SYNERGIES } from '../game/synergies';
 import {
   BoonId,
@@ -91,6 +92,86 @@ function baseState(): GameState {
 
   const next = gameReducer(state, { type: 'START_NEXT_HAND' });
   assert.equal(next.discardPile.some(card => card.id === 'skipped-modifier'), true);
+}
+
+{
+  const ownedRelics = [
+    RELICS[RelicId.GamblersFallacy],
+    RELICS[RelicId.GoldenKnuckles],
+    RELICS[RelicId.VampiricFangs],
+    RELICS[RelicId.FirstAidKit],
+    RELICS[RelicId.Hourglass],
+  ];
+  const state = {
+    ...baseState(),
+    gamePhase: 'gameOver' as const,
+    currentStage: 3,
+    bossHP: 1,
+    relics: ownedRelics,
+    playerHands: [hand([
+      { id: 'p1', rank: Rank.Ten, suit: Suit.Hearts },
+      { id: 'p2', rank: Rank.Nine, suit: Suit.Clubs },
+    ], { status: HandStatus.Standing })],
+    dealerHand: hand([
+      { id: 'd1', rank: Rank.Ten, suit: Suit.Spades },
+      { id: 'd2', rank: Rank.Seven, suit: Suit.Clubs },
+    ], { id: 0 }),
+  };
+
+  const next = gameReducer(state, { type: 'RESOLVE_HAND' });
+  assert.equal(next.gamePhase, 'reward');
+  assert.equal(next.rewardChoices.length, 3);
+  assert.equal(new Set(next.rewardChoices.map(relic => relic.id)).size, 3);
+  assert.equal(next.rewardChoices.some(relic => ownedRelics.some(owned => owned.id === relic.id)), false);
+}
+
+{
+  const state = { ...baseState(), gamePhase: 'reward' as const };
+  const next = gameReducer(state, { type: 'SELECT_REWARD', relicId: 'STALE_RELIC' as RelicId });
+  assert.equal(next.relics.every(Boolean), true);
+  assert.equal(next.relics.some(relic => relic.id === ('STALE_RELIC' as RelicId)), false);
+}
+
+{
+  const state = { ...baseState(), gamePhase: 'reward' as const, rewardChoices: [] };
+  const next = gameReducer(state, { type: 'SKIP_REWARD' });
+  assert.equal(next.relics.every(Boolean), true);
+  assert.notEqual(next.gamePhase, 'reward');
+}
+
+{
+  const state = {
+    ...baseState(),
+    gamePhase: 'gameOver' as const,
+    currentStage: 3,
+    relics: [RELICS[RelicId.BRASS_LANTERN]],
+  };
+  const next = gameReducer(state, { type: 'START_NEXT_HAND' });
+  assert.equal(next.dealerHand.isRevealed, true);
+}
+
+{
+  const state = {
+    ...baseState(),
+    gamePhase: 'playerTurn' as const,
+    relics: [RELICS[RelicId.ASTRAL_COMPASS]],
+    focus: 0,
+    maxFocus: 30,
+    playerHands: [hand([
+      { id: 'p1', rank: Rank.Two, suit: Suit.Hearts },
+      { id: 'p2', rank: Rank.Six, suit: Suit.Clubs },
+    ], { status: HandStatus.Hitting })],
+    dealerHand: hand([
+      { id: 'd1', rank: Rank.Ten, suit: Suit.Spades },
+      { id: 'd2', rank: Rank.Seven, suit: Suit.Clubs },
+    ], { id: 0 }),
+    deck: [
+      { id: 'next-four', rank: Rank.Four, suit: Suit.Diamonds },
+    ],
+  };
+
+  const next = gameReducer(state, { type: 'HIT' });
+  assert.equal(next.focus, 2);
 }
 
 withMockedRandom(0, () => {

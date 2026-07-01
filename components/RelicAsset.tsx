@@ -280,6 +280,128 @@ const RelicAsset: React.FC<RelicAssetProps> = ({ id, className, width = 64, heig
                     <path d="M70 50 L90 40 M75 55 L95 45" fill="none" stroke="#fde047" strokeWidth="3" strokeLinecap="round" />
                 </g>
             );
+        case RelicId.MIDAS_TOUCH:
+            return (
+                <g>
+                    <circle cx="50" cy="50" r="34" fill="#facc15" stroke="#854d0e" strokeWidth="4" />
+                    <path d="M35 35 H62 Q72 35 72 45 Q72 55 62 55 H46 V70 H35 Z" fill="#fff7ed" opacity="0.45" />
+                    <path d="M42 25 V75 M58 25 V75" stroke="#854d0e" strokeWidth="4" strokeLinecap="round" />
+                </g>
+            );
+        case RelicId.VOID_AMULET:
+            return (
+                <g>
+                    <path d="M50 10 L82 36 L70 82 H30 L18 36 Z" fill="#111827" stroke="#8b5cf6" strokeWidth="3" />
+                    <circle cx="50" cy="48" r="18" fill="#312e81" stroke="#c4b5fd" strokeWidth="2" />
+                    <circle cx="50" cy="48" r="7" fill="#020617" />
+                </g>
+            );
+        case RelicId.DARKSIGN:
+            return (
+                <g>
+                    <circle cx="50" cy="50" r="34" fill="#1c1917" stroke="#f97316" strokeWidth="3" />
+                    <path d="M50 18 C35 38 64 42 48 64 C66 56 72 35 50 18 Z" fill="#fb923c" />
+                    <path d="M34 74 C48 62 58 69 68 54" stroke="#7c2d12" strokeWidth="5" strokeLinecap="round" />
+                </g>
+            );
+        case RelicId.VOID_ESSENCE:
+            return (
+                <g>
+                    <path d="M50 12 C72 24 80 44 68 72 C48 84 28 76 20 52 C24 28 34 18 50 12 Z" fill="#581c87" stroke="#d8b4fe" strokeWidth="3" />
+                    <path d="M35 50 Q50 25 65 50 Q50 75 35 50 Z" fill="#020617" stroke="#a855f7" strokeWidth="2" />
+                </g>
+            );
+        case RelicId.EVENT_HORIZON:
+            return (
+                <g>
+                    <circle cx="50" cy="50" r="36" fill="#020617" stroke="#38bdf8" strokeWidth="3" />
+                    <ellipse cx="50" cy="50" rx="42" ry="14" fill="none" stroke="#f0abfc" strokeWidth="4" transform="rotate(-18 50 50)" />
+                    <circle cx="50" cy="50" r="12" fill="#111827" stroke="#e0f2fe" strokeWidth="2" />
+                </g>
+            );
+        case RelicId.VoidShard:
+            return (
+                <g>
+                    <path d="M50 8 L74 42 L58 92 L24 52 Z" fill="#4c1d95" stroke="#c084fc" strokeWidth="3" />
+                    <path d="M50 8 L58 92" stroke="#f5d0fe" strokeWidth="2" opacity="0.6" />
+                </g>
+            );
+        case RelicId.AbyssalEye:
+            return (
+                <g>
+                    <path d="M12 50 Q50 18 88 50 Q50 82 12 50 Z" fill="#0f172a" stroke="#60a5fa" strokeWidth="3" />
+                    <circle cx="50" cy="50" r="18" fill="#2563eb" />
+                    <circle cx="50" cy="50" r="8" fill="#020617" />
+                    <circle cx="57" cy="42" r="4" fill="#bfdbfe" />
+                </g>
+            );
+        case RelicId.MIRROR_SHARD:
+            return (
+                <g>
+                    <path d="M48 8 L78 34 L62 88 L20 64 L30 22 Z" fill="#bfdbfe" stroke="#1e3a8a" strokeWidth="3" />
+                    <path d="M35 28 L62 40 M30 58 L55 72" stroke="white" strokeWidth="3" opacity="0.7" />
+                </g>
+            );
+        case RelicId.BRASS_LANTERN:
+            return (
+                <g>
+                    <path d="M35 28 H65 L72 82 H28 Z" fill="#78350f" stroke="#f59e0b" strokeWidth="3" />
+                    <path d="M40 28 Q50 10 60 28" fill="none" stroke="#fbbf24" strokeWidth="4" />
+                    <circle cx="50" cy="55" r="16" fill="#fde68a" opacity="0.85" />
+                    <path d="M50 42 C42 52 56 54 48 68 C62 58 62 48 50 42 Z" fill="#f97316" />
+                </g>
+            );
+        case RelicId.THORNED_ROSARY:
+            return (
+                <g>
+                    <path d="M28 30 Q50 12 72 30 Q86 50 70 72 Q50 88 30 72 Q14 50 28 30 Z" fill="none" stroke="#7f1d1d" strokeWidth="5" strokeDasharray="6 5" />
+                    <path d="M50 42 L58 58 H42 Z" fill="#991b1b" stroke="#fecaca" strokeWidth="2" />
+                    <path d="M50 22 L54 34 L46 34 Z M78 50 L66 54 L66 46 Z M22 50 L34 46 L34 54 Z" fill="#ef4444" />
+                </g>
+            );
+        case RelicId.ASTRAL_COMPASS:
+            return (
+                <g>
+                    <circle cx="50" cy="50" r="36" fill="#172554" stroke="#93c5fd" strokeWidth="3" />
+                    <path d="M50 18 L58 50 L50 82 L42 50 Z" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="2" />
+                    <path d="M18 50 L50 42 L82 50 L50 58 Z" fill="#60a5fa" opacity="0.75" />
+                    <circle cx="50" cy="50" r="6" fill="#f8fafc" />
+                </g>
+            );
+        case RelicId.SAPPHIRE_CHALICE:
+            return (
+                <g>
+                    <path d="M30 18 H70 V42 Q70 62 55 68 V82 H70 V90 H30 V82 H45 V68 Q30 62 30 42 Z" fill="#1d4ed8" stroke="#bfdbfe" strokeWidth="3" />
+                    <path d="M34 24 H66 V38 Q50 32 34 38 Z" fill="#93c5fd" opacity="0.8" />
+                    <path d="M30 36 H18 Q20 54 34 54 M70 36 H82 Q80 54 66 54" fill="none" stroke="#bfdbfe" strokeWidth="3" />
+                </g>
+            );
+        case RelicId.GoldenGauntlets:
+            return (
+                <g>
+                    <path d="M12 50 C12 36 24 26 38 28 H62 C76 26 88 36 88 50 V66 H78 V82 H22 V66 H12 Z" fill="#f59e0b" stroke="#78350f" strokeWidth="3" />
+                    <circle cx="30" cy="46" r="6" fill="#fff7ed" opacity="0.45" />
+                    <circle cx="50" cy="40" r="6" fill="#fff7ed" opacity="0.45" />
+                    <circle cx="70" cy="46" r="6" fill="#fff7ed" opacity="0.45" />
+                    <path d="M24 68 H76" stroke="#78350f" strokeWidth="5" strokeLinecap="round" />
+                </g>
+            );
+        case RelicId.VampiricCrown:
+            return (
+                <g>
+                    <path d="M18 74 L28 28 L44 54 L50 18 L56 54 L72 28 L82 74 Z" fill="#7f1d1d" stroke="#fca5a5" strokeWidth="3" />
+                    <path d="M32 74 L40 54 L48 74 M60 74 L66 54 L72 74" fill="white" stroke="#991b1b" strokeWidth="1" />
+                    <circle cx="50" cy="46" r="6" fill="#ef4444" />
+                </g>
+            );
+        case RelicId.SovereignsChip:
+            return (
+                <g>
+                    <circle cx="50" cy="50" r="38" fill="#111827" stroke="#facc15" strokeWidth="5" />
+                    <circle cx="50" cy="50" r="26" fill="none" stroke="#dc2626" strokeWidth="4" strokeDasharray="8 5" />
+                    <path d="M50 27 L58 45 L78 45 L62 56 L68 74 L50 62 L32 74 L38 56 L22 45 L42 45 Z" fill="#facc15" />
+                </g>
+            );
         default:
             return <circle cx="50" cy="50" r="40" fill="#6b7280" />;
     }
