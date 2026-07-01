@@ -47,7 +47,7 @@ const BlackjackTableInternal = React.memo(({ children, felt, lighting }: Blackja
   return (
     <div className="w-full h-full flex items-center justify-center p-2 md:p-4 overflow-hidden">
       <motion.div
-        className={`relative w-full h-full max-w-[1600px] max-h-[1000px] rounded-[30px] md:rounded-[100px] border-[8px] md:border-[20px] border-stone-900 shadow-[0_20px_50px_black] ${feltClass.split(' ')[0]} overflow-hidden`}
+        className={`rogue-table relative w-full h-full max-w-[1600px] max-h-[1000px] rounded-[30px] md:rounded-[100px] border-[8px] md:border-[20px] border-stone-950 ${feltClass.split(' ')[0]} overflow-hidden`}
         style={{
           background: `radial-gradient(ellipse at center, ${feltClass.split(' ')[1].replace('from-[', '').replace(']', '')} 0%, ${feltClass.split(' ')[2].replace('to-[', '').replace(']', '')} 100%)`,
           aspectRatio: 'auto'
@@ -60,7 +60,7 @@ const BlackjackTableInternal = React.memo(({ children, felt, lighting }: Blackja
         
         <motion.div 
             className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(circle at 50% 50%, rgba(251,191,36,0.08) 0%, rgba(0,0,0,0.7) 100%)' }}
+            style={{ background: 'radial-gradient(circle at 50% 48%, rgba(248,196,92,0.12) 0%, rgba(127,16,16,0.11) 35%, rgba(0,0,0,0.78) 100%)' }}
             animate={{ 
                 opacity: [0.5, 0.8, 0.5],
                 scale: [1, 1.05, 1]
@@ -68,7 +68,7 @@ const BlackjackTableInternal = React.memo(({ children, felt, lighting }: Blackja
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        <div className="absolute inset-0 rounded-[85px] border-2 border-stone-800/20 shadow-[inset_0_0_200px_rgba(0,0,0,0.9)]"></div>
+        <div className="absolute inset-0 rounded-[85px] border-2 border-amber-900/10 shadow-[inset_0_0_240px_rgba(0,0,0,0.92)]"></div>
         
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[110%] md:-translate-y-[140%] flex flex-col items-center justify-center select-none pointer-events-none">
             <div className="text-stone-200">

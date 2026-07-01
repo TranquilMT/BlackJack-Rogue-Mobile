@@ -52,13 +52,11 @@ const DashboardButton: React.FC<{
             hapticManager.trigger('light');
             onClick();
         }}
-        className={`relative flex flex-col items-center justify-center p-4 md:p-6 rounded-xl border-2 transition-all group overflow-visible ${colorClass} ${size === 'large' ? 'col-span-2 row-span-2 md:text-2xl min-h-[180px] md:min-h-[220px]' : size === 'wide' ? 'col-span-2' : ''}`}
-        style={{
-            boxShadow: '4px 4px 0px rgba(0,0,0,0.5)',
-        }}
+        className={`rogue-menu-card relative flex flex-col items-center justify-center p-4 md:p-6 rounded-2xl border-2 transition-all group overflow-visible ${colorClass} ${size === 'large' ? 'col-span-2 row-span-2 md:text-2xl min-h-[180px] md:min-h-[220px]' : size === 'wide' ? 'col-span-2' : ''}`}
+        style={{}}
     >
         {/* Hover Glitch Effect */}
-        <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-red-950/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
         <motion.div 
             className="absolute inset-0 border-2 border-white/20 opacity-0 group-hover:opacity-100 pointer-events-none"
             animate={{ 
@@ -176,7 +174,7 @@ const MainMenu = ({ onPlay, onStartTutorial, onEnterMultiplayer, setShowPatchNot
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col z-50 text-stone-200 bg-[#050505] overflow-hidden">
+    <div className="relative w-full h-full flex flex-col z-50 text-stone-200 rogue-backdrop overflow-hidden">
       <AnimatedBackground />
       
       {/* Top Bar - Fixed height to allow scrolling below */}
@@ -245,7 +243,7 @@ const MainMenu = ({ onPlay, onStartTutorial, onEnterMultiplayer, setShowPatchNot
                           animate={{ opacity: 1, y: 0 }}
                           whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 0, 0, 0.1)' }}
                           onClick={() => setMenuView('shop')}
-                          className="flex items-center gap-3 bg-black/60 px-4 py-2 border-2 border-red-900/30 backdrop-blur-sm cursor-pointer group transition-all"
+                          className="rogue-panel flex items-center gap-3 px-4 py-2 cursor-pointer group transition-all rounded-xl"
                       >
                           <div className={`w-4 h-6 border border-white/20 shadow-[0_0_10px_rgba(0,0,0,0.8)] ${
                               metaState.customization.cardBack === 'royal' ? 'bg-blue-900' :
@@ -266,7 +264,7 @@ const MainMenu = ({ onPlay, onStartTutorial, onEnterMultiplayer, setShowPatchNot
                           animate={{ opacity: 1, y: 0 }}
                           whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 0, 0, 0.1)' }}
                           onClick={() => setMenuView('shop')}
-                          className="flex items-center gap-3 bg-black/60 px-4 py-2 border-2 border-red-900/30 backdrop-blur-sm cursor-pointer group transition-all"
+                          className="rogue-panel flex items-center gap-3 px-4 py-2 cursor-pointer group transition-all rounded-xl"
                       >
                           <div className={`w-5 h-5 rounded-full border border-white/20 shadow-[0_0_10px_rgba(0,0,0,0.8)] ${
                               metaState.customization.tableFelt === 'blue' ? 'bg-blue-900' :

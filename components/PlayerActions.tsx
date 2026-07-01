@@ -123,19 +123,19 @@ const PlayerActions = React.memo(({ position, onHit, onStand, onSurrender, onDou
   return (
     <AnimatePresence>
         <motion.div 
-            className={`z-[100] flex ${isDesktop ? 'flex-row' : 'flex-col'} gap-2 p-2 bg-black/90 rounded border border-yellow-900/50 shadow-[0_0_15px_rgba(0,0,0,0.8)]`}
+            className={`rogue-action-panel z-[100] flex ${isDesktop ? 'flex-row' : 'flex-col'} gap-2 p-2 rounded-xl`}
             style={{...finalStyle, width: isDesktop ? 'auto' : MENU_WIDTH}}
             initial={{ opacity: 0, scale: 0.9, y: isDesktop ? 20 : 0 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: isDesktop ? 20 : 0 }}
             transition={{ duration: 0.2 }}
         >
-            {!isDesktop && <div className="text-center text-[8px] text-yellow-500/50 font-serif-display uppercase tracking-widest mb-0.5">Actions</div>}
+            {!isDesktop && <div className="text-center text-[8px] text-amber-300/70 font-serif-display uppercase tracking-widest mb-0.5">Actions</div>}
             
             <ActionButton 
             onClick={onHit ? () => { audioManager.playSound('card-hit'); onHit(); } : undefined} 
             disabled={!onHit}
-            className={`h-12 text-xs tracking-wider bg-green-950/90 border-green-600 text-green-100 hover:bg-green-900 rounded-sm ${isDesktop ? 'w-24' : 'w-full'}`} 
+            className={`h-12 text-xs tracking-wider bg-emerald-950/90 border-emerald-500/70 text-emerald-100 hover:bg-emerald-900 rounded-md ${isDesktop ? 'w-24' : 'w-full'}`} 
             highlightClass="action-hit"
             shortcut="H"
             >
@@ -145,7 +145,7 @@ const PlayerActions = React.memo(({ position, onHit, onStand, onSurrender, onDou
             <ActionButton 
             onClick={onStand ? () => { audioManager.playSound('player-stand'); onStand(); } : undefined} 
             disabled={!onStand}
-            className={`h-12 text-xs tracking-wider bg-red-950/90 border-red-600 text-red-100 hover:bg-red-900 rounded-sm ${isDesktop ? 'w-24' : 'w-full'}`} 
+            className={`h-12 text-xs tracking-wider bg-red-950/90 border-red-500/70 text-red-100 hover:bg-red-900 rounded-md ${isDesktop ? 'w-24' : 'w-full'}`} 
             highlightClass="action-stand"
             shortcut="S"
             >
@@ -155,7 +155,7 @@ const PlayerActions = React.memo(({ position, onHit, onStand, onSurrender, onDou
             <ActionButton 
             onClick={onSurrender ? () => { audioManager.playSound('player-damage'); onSurrender(); } : undefined} 
             disabled={!onSurrender}
-            className={`h-12 text-[10px] bg-gray-900/90 border-gray-600 text-gray-300 hover:bg-gray-800 rounded-sm flex flex-col leading-none py-0.5 ${isDesktop ? 'w-24' : 'w-full'}`} 
+            className={`h-12 text-[10px] bg-stone-950/90 border-stone-600 text-stone-300 hover:bg-stone-900 rounded-md flex flex-col leading-none py-0.5 ${isDesktop ? 'w-24' : 'w-full'}`} 
             highlightClass="action-surrender"
             shortcut="Q"
             >
@@ -170,7 +170,7 @@ const PlayerActions = React.memo(({ position, onHit, onStand, onSurrender, onDou
             onClick={onDouble ? () => { audioManager.playSound('double-down'); onDouble(); } : undefined} 
             disabled={!onDouble} 
             isBlocked={blockedAction === 'double'} 
-            className={`h-12 bg-blue-950/80 border-blue-600/70 text-blue-100 hover:bg-blue-900 rounded-sm flex flex-col leading-none py-0.5 ${isDesktop ? 'w-24' : 'w-full'}`} 
+            className={`h-12 bg-cyan-950/80 border-cyan-500/60 text-cyan-100 hover:bg-cyan-900 rounded-md flex flex-col leading-none py-0.5 ${isDesktop ? 'w-24' : 'w-full'}`} 
             highlightClass="action-double"
             shortcut="D"
             >
@@ -182,7 +182,7 @@ const PlayerActions = React.memo(({ position, onHit, onStand, onSurrender, onDou
             onClick={onSplit ? () => { audioManager.playSound('split'); onSplit(); } : undefined} 
             disabled={!onSplit} 
             isBlocked={blockedAction === 'split'} 
-            className={`h-12 bg-purple-950/80 border-purple-600/70 text-purple-100 hover:bg-purple-900 rounded-sm flex flex-col leading-none py-0.5 ${isDesktop ? 'w-24' : 'w-full'}`} 
+            className={`h-12 bg-purple-950/80 border-purple-500/60 text-purple-100 hover:bg-purple-900 rounded-md flex flex-col leading-none py-0.5 ${isDesktop ? 'w-24' : 'w-full'}`} 
             highlightClass="action-split"
             shortcut="P"
             >
@@ -193,7 +193,7 @@ const PlayerActions = React.memo(({ position, onHit, onStand, onSurrender, onDou
             <ActionButton 
             onClick={onIntimidate ? () => { audioManager.playSound('focus-full'); onIntimidate(); } : undefined} 
             disabled={!onIntimidate} 
-            className={`h-12 bg-indigo-950/80 border-indigo-500/60 text-indigo-100 hover:bg-indigo-900 rounded-sm flex flex-col leading-none py-0.5 ${isDesktop ? 'w-24' : 'w-full'}`} 
+            className={`h-12 bg-indigo-950/80 border-indigo-400/60 text-indigo-100 hover:bg-indigo-900 rounded-md flex flex-col leading-none py-0.5 ${isDesktop ? 'w-24' : 'w-full'}`} 
             highlightClass="action-intimidate"
             shortcut="I"
             >

@@ -29,7 +29,7 @@ const StatBar = ({ value, max, colorFrom, colorTo }: { value: number, max: numbe
     }, [value, lastValue, lastPercentage, percentage]);
 
     return (
-        <div className="relative w-full bg-black/50 rounded-md h-4 md:h-5 mt-1 overflow-hidden border border-white/10">
+        <div className="relative w-full bg-black/70 rounded-md h-4 md:h-5 mt-1 overflow-hidden border border-amber-500/10 shadow-inner">
             {/* Drain Bar */}
             <motion.div
               className="absolute top-0 left-0 h-full bg-gray-400 opacity-70"
@@ -89,11 +89,11 @@ const PlayerStatus = React.memo(({ hp, maxHp, shield, runCurrency, focus, maxFoc
   return (
     <motion.div 
       animate={controls}
-      className="player-status-highlight absolute top-2 left-2 md:top-4 md:left-4 z-50 text-white bg-black/60 p-1.5 md:p-3 rounded-lg shadow-lg w-[42%] max-w-[160px] md:max-w-none md:w-64 border border-white/10"
+      className="player-status-highlight rogue-panel absolute top-2 left-2 md:top-4 md:left-4 z-50 text-white p-1.5 md:p-3 rounded-xl w-[42%] max-w-[160px] md:max-w-none md:w-64"
     >
       <div className="flex justify-between items-baseline">
-        <h2 className="text-xs md:text-lg font-bold text-cyan-300 font-serif-display tracking-wider">Player</h2>
-        <p className="text-[10px] md:text-sm font-bold text-yellow-300">Lvl {level}</p>
+        <h2 className="text-xs md:text-lg font-bold text-cyan-200 font-serif-display tracking-wider uppercase">Rogue</h2>
+        <p className="text-[10px] md:text-sm font-bold text-amber-300">Lvl {level}</p>
       </div>
       <div className="relative">
         <StatBar value={hp} max={maxHp} colorFrom="from-red-700" colorTo="to-red-500" />

@@ -604,15 +604,15 @@ export default function App() {
   }, [appPhase, state.gamePhase, state.potions, state.playerHP, activeHand, handleHit, handleStand, handleDouble, handleSplit, handleUsePotion]);
 
   // Determine background class based on floor
-  let bgClass = "bg-stone-900"; // Default
-  if (state.currentFloor === 1) bgClass = "bg-slate-900"; // Rusty Brig
-  if (state.currentFloor === 2) bgClass = "bg-fuchsia-950"; // Neon Dungeon
-  if (state.currentFloor >= 3) bgClass = "bg-rose-950"; // High Roller's Suite
+  let bgClass = "rogue-backdrop"; // Default abyss
+  if (state.currentFloor === 1) bgClass = "rogue-backdrop"; // Rusted crypt
+  if (state.currentFloor === 2) bgClass = "rogue-backdrop"; // Neon dungeon
+  if (state.currentFloor >= 3) bgClass = "rogue-backdrop"; // High roller abyss
 
   const GameBoard = (
     <motion.div 
         animate={gameContainerControls} 
-        className={`w-full h-full relative ${bgClass} transition-colors duration-1000`}
+        className={`w-full h-full relative ${bgClass} transition-colors duration-1000 overflow-hidden`}
         style={{ 
             x: shake.x, 
             y: shake.y,
@@ -620,7 +620,7 @@ export default function App() {
         }}
     >
       {showDebug && (
-          <div className="absolute top-2 left-2 z-[9999] bg-black/80 p-2 font-mono text-[10px] text-green-500 border border-green-900/50 pointer-events-none select-none">
+          <div className="absolute top-2 left-2 z-[9999] rogue-panel p-2 font-mono text-[10px] text-green-400 border border-green-900/50 pointer-events-none select-none rounded-lg">
               <p>ENGINE: RAYLIB-JS EMULATED</p>
               <p>FPS: {fps}</p>
               <p>PHASE: {state.gamePhase}</p>
@@ -631,7 +631,7 @@ export default function App() {
       
       <button 
         onClick={() => setShowDebug(!showDebug)}
-        className="absolute right-4 top-4 z-[9999] p-2 bg-black/40 border border-white/10 rounded text-white/40 hover:text-white transition-colors"
+        className="absolute right-4 top-4 z-[9999] p-2 rogue-panel rounded text-white/50 hover:text-white transition-colors"
         title="Toggle Debug"
       >
         <Activity className="w-4 h-4" />
@@ -664,21 +664,21 @@ export default function App() {
       />
 
       {tempDamageMultiplier && (
-          <div className="absolute top-20 right-4 bg-red-900/80 border border-red-500 text-white p-2 rounded-lg animate-pulse z-40">
+          <div className="absolute top-20 right-4 rogue-panel text-white p-2 rounded-lg animate-pulse z-40">
               <p className="font-bold">DAMAGE BUFF</p>
               <p>{tempDamageMultiplier.value}x for {tempDamageMultiplier.roundsLeft} turns</p>
           </div>
       )}
       
       {hollowingStacks > 0 && (
-          <div className="absolute top-24 left-4 bg-purple-900/80 border border-purple-500 text-white p-2 rounded-lg z-40">
+          <div className="absolute top-24 left-4 rogue-panel text-white p-2 rounded-lg z-40">
               <p className="font-bold text-xs uppercase">Hollowing</p>
               <p className="text-xs">Max HP Reduced: -{hollowingStacks}</p>
           </div>
       )}
 
       {floorModifier.id !== 'NONE' && gamePhase !== 'roundStart' && (
-           <div className="absolute top-1/2 -translate-y-[150px] left-1/2 -translate-x-1/2 z-50 bg-black/60 p-3 rounded-lg text-center shadow-lg pointer-events-none">
+           <div className="absolute top-1/2 -translate-y-[150px] left-1/2 -translate-x-1/2 z-50 rogue-panel p-3 rounded-lg text-center pointer-events-none">
                <h3 className="text-lg font-bold text-purple-300">{floorModifier.name}</h3>
                <p className="text-sm text-gray-300">{floorModifier.description}</p>
            </div>
