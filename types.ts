@@ -51,6 +51,7 @@ export enum CardModifierId {
     THE_MOON = 'THE_MOON',
     THE_EMPEROR = 'THE_EMPEROR',
     THE_EMPRESS = 'THE_EMPRESS',
+    THE_CLONE = 'THE_CLONE',
 }
 
 export interface Card {
@@ -103,6 +104,7 @@ export enum SynergyId {
   DoubleDownFrenzy = 'DOUBLE_DOWN_FRENZY',
   SplitUniverse = 'SPLIT_UNIVERSE',
   GamblersEdge = 'GAMBLERS_EDGE',
+  EchoChamber = 'ECHO_CHAMBER',
 }
 
 export interface Synergy {

@@ -118,6 +118,10 @@ export const SYNERGIES: Record<SynergyId, Omit<Synergy, 'id'>> = {
   [SynergyId.GamblersEdge]: {
       name: 'Gambler\'s Edge',
       description: 'If your hand score is exactly 19, gain +15 Flat Damage.',
+  },
+  [SynergyId.EchoChamber]: {
+      name: 'Echo Chamber',
+      description: 'Your hand contains a cloned card. Gain +0.5x Damage Multiplier.',
   }
 };
 
@@ -357,6 +361,11 @@ const checkSplitUniverse = (hand: Hand): Synergy | null => {
     return null;
 };
 
+const checkEchoChamber = (hand: Hand): Synergy | null => {
+    if (hand.cards.some(c => c.isCloned)) return { id: SynergyId.EchoChamber, ...SYNERGIES[SynergyId.EchoChamber] };
+    return null;
+};
+
 
 export const getActiveSynergies = (hand: Hand): Synergy[] => {
   const active: Synergy[] = [];
@@ -390,7 +399,8 @@ export const getActiveSynergies = (hand: Hand): Synergy[] => {
       checkSnapshot,
       checkDoubleDownFrenzy,
       checkSplitUniverse,
-      checkGamblersEdge
+      checkGamblersEdge,
+      checkEchoChamber
   ];
 
   for (const check of potentialSynergies) {

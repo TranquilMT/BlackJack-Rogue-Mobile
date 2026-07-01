@@ -243,6 +243,7 @@ function updateHand(hand: Hand, newCards: Card[], state: GameState): Hand {
             case SynergyId.Lowball: updatedHand.flatDamageBonus += 10; break;
             case SynergyId.OddSplit: updatedHand.flatDamageBonus += 5; break;
             case SynergyId.FaceOff: synergyMultiplier += 2.0; break;
+            case SynergyId.EchoChamber: synergyMultiplier += 0.5; break;
             case SynergyId.Zenith: updatedHand.flatDamageBonus += 5; break;
             case SynergyId.GamblersEdge: updatedHand.flatDamageBonus += 15; break;
             case SynergyId.FiveCardCharlie: updatedHand.status = HandStatus.Win; break;
@@ -297,10 +298,10 @@ function processDrawChain(state: GameState, initialCard: Card, activeHand: Hand,
         let card = drawQueue.shift()!;
         
         if (pendingClone) {
-            const cloned = { ...card, id: `${card.id}-clone-${Date.now()}`, isCloned: true };
+            const cloned = { ...card, id: `${card.id}-clone-${Date.now()}-${iterations}`, isCloned: true };
             drawQueue.unshift(card);
             drawQueue.unshift(cloned);
-            messages.push("Clone activated!");
+            messages.push(`Clone copied ${card.rank}${card.suit}!`);
             pendingClone = false;
             continue;
         }
@@ -334,12 +335,12 @@ function processDrawChain(state: GameState, initialCard: Card, activeHand: Hand,
         }
 
         // VOID ESSENCE: Gain focus on modifier card
-        if (card.modifier && currentState.relics.some(r => r.id === RelicId.VOID_ESSENCE)) {
+        if (!card.isCloned && card.modifier && currentState.relics.some(r => r.id === RelicId.VOID_ESSENCE)) {
             currentState.focus = Math.min(currentState.maxFocus, currentState.focus + 1);
         }
 
         // VOID SHARD: Gain focus on void card
-        if ((card.modifier === CardModifierId.THE_ABYSS || card.modifier === CardModifierId.THE_VOIDWALKER) && currentState.relics.some(r => r.id === RelicId.VoidShard)) {
+        if (!card.isCloned && (card.modifier === CardModifierId.THE_ABYSS || card.modifier === CardModifierId.THE_VOIDWALKER) && currentState.relics.some(r => r.id === RelicId.VoidShard)) {
             currentState.focus = Math.min(currentState.maxFocus, currentState.focus + 1);
         }
     }
@@ -1850,7 +1851,7 @@ function applyModifierCardEffect(card: Card, state: GameState, hand: Hand, sourc
     const actor = isPlayer ? 'You' : 'Dealer';
     const negativeMultiplier = !isPlayer && state.relics.some(r => r.id === RelicId.SHATTERED_SOUL) ? 2 : 1;
 
-    if (!card.modifier) return { newState, message, drawAnother, cloneCard, cloneNext };
+    if (!card.modifier || card.isCloned) return { newState, message, drawAnother, cloneCard, cloneNext };
 
     const damagePlayer = (amount: number) => {
         let remaining = amount;
@@ -1955,6 +1956,12 @@ function applyModifierCardEffect(card: Card, state: GameState, hand: Hand, sourc
         case CardModifierId.THE_MAGNET:
             message = `${actor}'s Magnetic Pull draws another card...`;
             drawAnother = true;
+            break;
+        case CardModifierId.THE_CLONE:
+            message = isPlayer ? "Clone primes the next draw..." : "Dealer's Clone primes the next draw...";
+            cloneNext = true;
+            drawAnother = true;
+            newState.pendingVisualEffect = 'glitch';
             break;
         case CardModifierId.THE_JUDGEMENT: {
             const damage = Math.max(6, hand.score * 2);

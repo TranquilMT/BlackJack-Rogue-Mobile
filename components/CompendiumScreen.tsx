@@ -15,24 +15,25 @@ interface CompendiumScreenProps {
 type CompendiumTab = 'Relics' | 'Potions' | 'Synergies' | 'Modifiers';
 
 const MODIFIER_INFO: Record<CardModifierId, { name: string; description: string }> = {
-    [CardModifierId.THE_REAPER]: { name: 'The Reaper', description: 'Value <span class="font-rogue-number">10</span>. Deals <span class="font-rogue-number">6</span> damage to opponent on play.' },
-    [CardModifierId.THE_GUARDIAN]: { name: 'The Guardian', description: 'Value <span class="font-rogue-number">10</span>. Grants <span class="font-rogue-number">5</span> Shield on play.' },
-    [CardModifierId.THE_JESTER]: { name: 'The Jester', description: 'Value <span class="font-rogue-number">5</span>. Rerolls your hand on play.' },
-    [CardModifierId.THE_ABYSS]: { name: 'The Abyss', description: 'Value <span class="font-rogue-number">1</span>. Discards opponent\'s last card.' },
-    [CardModifierId.THE_BERSERKER]: { name: 'The Berserker', description: 'Value <span class="font-rogue-number">8</span>. Deals double damage if you are below <span class="font-rogue-number">50</span>% HP.' },
-    [CardModifierId.THE_ALCHEMIST]: { name: 'The Alchemist', description: 'Value <span class="font-rogue-number">6</span>. Transmutes a random card in hand to Gold.' },
-    [CardModifierId.THE_ORACLE]: { name: 'The Oracle', description: 'Value <span class="font-rogue-number">1</span>/<span class="font-rogue-number">11</span>. Reveals the next card in the deck.' },
+    [CardModifierId.THE_REAPER]: { name: 'The Reaper', description: 'Value <span class="font-rogue-number">10</span>. Costs you <span class="font-rogue-number">6</span> HP when you draw it; backfires for Dealer damage when drawn by the Dealer.' },
+    [CardModifierId.THE_GUARDIAN]: { name: 'The Guardian', description: 'Value <span class="font-rogue-number">10</span>. Grants <span class="font-rogue-number">15</span> Shield on play.' },
+    [CardModifierId.THE_JESTER]: { name: 'The Jester', description: 'Value <span class="font-rogue-number">5</span>. Grants <span class="font-rogue-number">40</span> Shards when you draw it.' },
+    [CardModifierId.THE_ABYSS]: { name: 'The Abyss', description: 'Value <span class="font-rogue-number">1</span>. Consumes the active Shield pool.' },
+    [CardModifierId.THE_BERSERKER]: { name: 'The Berserker', description: 'Value <span class="font-rogue-number">8</span>. Costs <span class="font-rogue-number">4</span> HP and grants <span class="font-rogue-number">+2</span> permanent flat damage for the run.' },
+    [CardModifierId.THE_ALCHEMIST]: { name: 'The Alchemist', description: 'Value <span class="font-rogue-number">6</span>. Grants <span class="font-rogue-number">25</span> Shards, but heals the Dealer for <span class="font-rogue-number">5</span> HP.' },
+    [CardModifierId.THE_ORACLE]: { name: 'The Oracle', description: 'Value <span class="font-rogue-number">11</span>/<span class="font-rogue-number">1</span>. Reveals the Dealer hand.' },
     [CardModifierId.THE_VAMPIRE]: { name: 'The Vampire', description: 'Value <span class="font-rogue-number">5</span>. Drains <span class="font-rogue-number">5</span> HP from opponent and heals you.' },
-    [CardModifierId.THE_VOIDWALKER]: { name: 'The Voidwalker', description: 'Value <span class="font-rogue-number">1</span>. Ignores shields when attacking.' },
-    [CardModifierId.THE_TIMEWARP]: { name: 'The Timewarp', description: 'Value <span class="font-rogue-number">10</span>. Grants an extra turn.' },
-    [CardModifierId.THE_MAGNET]: { name: 'The Magnet', description: 'Value <span class="font-rogue-number">7</span>. Draws a card from the discard pile.' },
-    [CardModifierId.THE_SUN]: { name: 'The Sun', description: 'Value <span class="font-rogue-number">10</span>. Fully heals you.' },
+    [CardModifierId.THE_VOIDWALKER]: { name: 'The Voidwalker', description: 'Value <span class="font-rogue-number">1</span>. Grants <span class="font-rogue-number">15</span> Focus when you draw it.' },
+    [CardModifierId.THE_TIMEWARP]: { name: 'The Timewarp', description: 'Value <span class="font-rogue-number">10</span>. Shuffles the discard pile back into the deck.' },
+    [CardModifierId.THE_MAGNET]: { name: 'The Magnet', description: 'Value <span class="font-rogue-number">7</span>. Pulls one more card into the hand.' },
+    [CardModifierId.THE_SUN]: { name: 'The Sun', description: 'Value <span class="font-rogue-number">10</span>. Heals <span class="font-rogue-number">15</span> HP and deals <span class="font-rogue-number">15</span> damage.' },
     [CardModifierId.THE_JUDGEMENT]: { name: 'The Judgement', description: 'Value <span class="font-rogue-number">10</span>. Deals damage equal to <span class="font-rogue-number">2</span>x your current hand score on play.' },
     [CardModifierId.THE_TOWER]: { name: 'The Tower', description: 'Value <span class="font-rogue-number">8</span>. Grants <span class="font-rogue-number">30</span> Shield but reduces permanent damage by <span class="font-rogue-number">1</span>.' },
     [CardModifierId.THE_STAR]: { name: 'The Star', description: 'Value <span class="font-rogue-number">7</span>. Increases Crit Chance by <span class="font-rogue-number">10</span>% for the current floor.' },
     [CardModifierId.THE_MOON]: { name: 'The Moon', description: 'Value <span class="font-rogue-number">9</span>. Intimidates the Dealer, potentially skipping their turn.' },
-    [CardModifierId.THE_EMPEROR]: { name: 'The Emperor', description: 'Value <span class="font-rogue-number">10</span>. Grants <span class="font-rogue-number">20</span> Shield and deals <span class="font-rogue-number">10</span> damage.' },
-    [CardModifierId.THE_EMPRESS]: { name: 'The Empress', description: 'Value <span class="font-rogue-number">10</span>. Heals <span class="font-rogue-number">15</span> HP and grants <span class="font-rogue-number">10</span> Shield.' },
+    [CardModifierId.THE_EMPEROR]: { name: 'The Emperor', description: 'Value <span class="font-rogue-number">10</span>. Grants <span class="font-rogue-number">10</span> Shield and <span class="font-rogue-number">10</span> Shards.' },
+    [CardModifierId.THE_EMPRESS]: { name: 'The Empress', description: 'Value <span class="font-rogue-number">10</span>. Heals <span class="font-rogue-number">10</span> HP and grants <span class="font-rogue-number">10</span> Focus.' },
+    [CardModifierId.THE_CLONE]: { name: 'The Clone', description: 'Value <span class="font-rogue-number">3</span>. Draws the next card and adds a cloned scoring copy to your hand.' },
 };
 
 const CompendiumScreen: React.FC<CompendiumScreenProps> = ({ onBack }) => {

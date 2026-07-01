@@ -38,6 +38,7 @@ export function createDeck(unlockedModifierIds: CardModifierId[] = [CardModifier
       { id: CardModifierId.THE_MOON, rank: Rank.Nine, count: 1 },
       { id: CardModifierId.THE_EMPEROR, rank: Rank.King, count: 1 },
       { id: CardModifierId.THE_EMPRESS, rank: Rank.Queen, count: 1 },
+      { id: CardModifierId.THE_CLONE, rank: Rank.Three, count: 2 },
   ];
 
   for(let i=0; i<2; i++) { 
@@ -86,6 +87,7 @@ export function getCardValue(card: Card): { low: number; high: number } {
   if (card.modifier === CardModifierId.THE_MOON) return { low: 9, high: 9 };
   if (card.modifier === CardModifierId.THE_EMPEROR) return { low: 10, high: 10 };
   if (card.modifier === CardModifierId.THE_EMPRESS) return { low: 10, high: 10 };
+  if (card.modifier === CardModifierId.THE_CLONE) return { low: 3, high: 3 };
   if (card.rank === Rank.Ace) return { low: 1, high: 11 };
   if ([Rank.King, Rank.Queen, Rank.Jack, Rank.Ten].includes(card.rank)) return { low: 10, high: 10 };
   return { low: parseInt(card.rank), high: parseInt(card.rank) };

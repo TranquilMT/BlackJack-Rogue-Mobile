@@ -38,6 +38,7 @@ const synergyColors: Record<SynergyId, string> = {
   [SynergyId.DoubleDownFrenzy]: 'bg-orange-600/80 border-orange-400',
   [SynergyId.SplitUniverse]: 'bg-indigo-600/80 border-indigo-400',
   [SynergyId.GamblersEdge]: 'bg-red-700/80 border-red-500',
+  [SynergyId.EchoChamber]: 'bg-emerald-700/80 border-emerald-400',
 };
 
 

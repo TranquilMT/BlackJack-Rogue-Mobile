@@ -73,7 +73,7 @@ withMockedRandom(0, () => {
   const state = createInitialState({
     unlockedRelicIds: [RelicId.GoldenKnuckles],
     unlockedRuneIds: [],
-    unlockedModifierCardIds: [CardModifierId.THE_REAPER, CardModifierId.THE_SUN],
+    unlockedModifierCardIds: [CardModifierId.THE_REAPER, CardModifierId.THE_SUN, CardModifierId.THE_CLONE],
     unlockedSkills: [],
     skillPoints: 0,
     totalCurrency: 0,
@@ -90,6 +90,8 @@ withMockedRandom(0, () => {
   });
   assert.equal(state.unlockedModifierCardIds.includes(CardModifierId.THE_SUN), true);
   assert.equal(state.deck.some(card => card.modifier === CardModifierId.THE_SUN), true);
+  assert.equal(state.unlockedModifierCardIds.includes(CardModifierId.THE_CLONE), true);
+  assert.equal(state.deck.some(card => card.modifier === CardModifierId.THE_CLONE), true);
 });
 
 const aceLowStraightFlush = hand([
@@ -98,6 +100,33 @@ const aceLowStraightFlush = hand([
   { id: '3', rank: Rank.Three, suit: Suit.Hearts },
 ]);
 assert.equal(getActiveSynergies(aceLowStraightFlush).some(s => s.id === SynergyId.StraightFlush), true);
+
+{
+  const state = {
+    ...baseState(),
+    gamePhase: 'playerTurn' as const,
+    playerHands: [hand([
+      { id: 'p1', rank: Rank.Two, suit: Suit.Hearts },
+      { id: 'p2', rank: Rank.Five, suit: Suit.Clubs },
+    ], { status: HandStatus.Hitting })],
+    dealerHand: hand([
+      { id: 'd1', rank: Rank.Ten, suit: Suit.Spades },
+      { id: 'd2', rank: Rank.Seven, suit: Suit.Clubs },
+    ], { id: 0 }),
+    deck: [
+      { id: 'next-four', rank: Rank.Four, suit: Suit.Diamonds },
+      { id: 'clone-card', rank: Rank.Three, suit: Suit.Spades, modifier: CardModifierId.THE_CLONE },
+    ],
+  };
+  const next = gameReducer(state, { type: 'HIT' });
+  const updatedHand = next.playerHands[0];
+  assert.equal(updatedHand.cards.length, 5);
+  assert.equal(updatedHand.cards.filter(card => card.id.startsWith('next-four')).length, 2);
+  assert.equal(updatedHand.cards.some(card => card.id.startsWith('next-four-clone') && card.isCloned), true);
+  assert.equal(updatedHand.score, 18);
+  assert.equal(updatedHand.activeSynergies.some(s => s.id === SynergyId.EchoChamber), true);
+  assert.equal(updatedHand.damageMultiplier, 1.7);
+}
 
 {
   const state = {

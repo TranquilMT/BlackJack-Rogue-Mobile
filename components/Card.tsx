@@ -196,6 +196,14 @@ const ModifierFace = ({ modifier }: { modifier: CardModifierId }) => {
                    <div className="text-[10px] text-pink-400 relative z-20">+10 HP / +10 Focus</div>
                </div>
            );
+        case CardModifierId.THE_CLONE:
+            return (
+               <div className="absolute inset-0 flex flex-col items-center justify-center bg-emerald-950 text-emerald-200">
+                   <div className="text-5xl md:text-6xl drop-shadow-[0_0_15px_#34d399] relative z-20">🧬</div>
+                   <div className="font-serif-display font-bold text-xs md:text-sm mt-1 uppercase tracking-widest text-emerald-300 relative z-20">Clone</div>
+                   <div className="text-[10px] text-emerald-400 relative z-20">Copy Next Card</div>
+               </div>
+           );
         default: return null;
     }
 }
@@ -229,6 +237,8 @@ const getModifierStyles = (modifier: CardModifierId) => {
              return { borderColor: 'border-stone-500', shadow: 'rgba(168, 162, 158, 0.8)' };
         case CardModifierId.THE_EMPRESS:
              return { borderColor: 'border-pink-500', shadow: 'rgba(236, 72, 153, 0.8)' };
+        case CardModifierId.THE_CLONE:
+             return { borderColor: 'border-emerald-500', shadow: 'rgba(52, 211, 153, 0.8)' };
         default:
             return { borderColor: 'border-purple-500', shadow: 'rgba(168, 85, 247, 0.8)' };
     }
