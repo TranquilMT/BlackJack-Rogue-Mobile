@@ -19,6 +19,22 @@ type Particle = {
     decay: number;
 };
 
+const getParticleConfig = (graphicsQuality: GraphicsQuality) => {
+    switch (graphicsQuality) {
+        case GraphicsQuality.Minimal:
+            return { scale: 0.2, maxParticles: 80, pixelRatio: 1 };
+        case GraphicsQuality.Low:
+            return { scale: 0.45, maxParticles: 140, pixelRatio: 1 };
+        case GraphicsQuality.Medium:
+            return { scale: 0.7, maxParticles: 220, pixelRatio: 1.25 };
+        case GraphicsQuality.Ultra:
+            return { scale: 1, maxParticles: 420, pixelRatio: 1.5 };
+        case GraphicsQuality.High:
+        default:
+            return { scale: 0.85, maxParticles: 320, pixelRatio: 1.25 };
+    }
+};
+
 const ParticleSystem = memo(forwardRef<ParticleSystemHandle, { graphicsQuality?: GraphicsQuality }>((props, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const particlesRef = useRef<Particle[]>([]);
@@ -28,12 +44,13 @@ const ParticleSystem = memo(forwardRef<ParticleSystemHandle, { graphicsQuality?:
 
     useImperativeHandle(ref, () => ({
         spawn: (x, y, type, count) => {
-            let adjustedCount = count;
-            if (graphicsQuality === GraphicsQuality.Minimal) adjustedCount = Math.floor(count * 0.2);
-            else if (graphicsQuality === GraphicsQuality.Low) adjustedCount = Math.floor(count * 0.5);
-            else if (graphicsQuality === GraphicsQuality.Medium) adjustedCount = Math.floor(count * 0.8);
+            const config = getParticleConfig(graphicsQuality);
+            let adjustedCount = Math.floor(count * config.scale);
             
             if (adjustedCount < 1) adjustedCount = 1;
+            const availableSlots = Math.max(0, config.maxParticles - particlesRef.current.length);
+            adjustedCount = Math.min(adjustedCount, availableSlots);
+            if (adjustedCount === 0) return;
 
             for (let i = 0; i < adjustedCount; i++) {
                 const angle = Math.random() * Math.PI * 2;
@@ -136,8 +153,12 @@ const ParticleSystem = memo(forwardRef<ParticleSystemHandle, { graphicsQuality?:
         };
 
         const handleResize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const { pixelRatio } = getParticleConfig(graphicsQuality);
+            canvas.width = Math.floor(window.innerWidth * pixelRatio);
+            canvas.height = Math.floor(window.innerHeight * pixelRatio);
+            canvas.style.width = `${window.innerWidth}px`;
+            canvas.style.height = `${window.innerHeight}px`;
+            ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
         };
 
         window.addEventListener('resize', handleResize);
@@ -152,8 +173,9 @@ const ParticleSystem = memo(forwardRef<ParticleSystemHandle, { graphicsQuality?:
         return () => {
             window.removeEventListener('resize', handleResize);
             if (reqRef.current) cancelAnimationFrame(reqRef.current);
+            reqRef.current = null;
         };
-    }, []);
+    }, [graphicsQuality]);
 
     return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-[90]" />;
 }));

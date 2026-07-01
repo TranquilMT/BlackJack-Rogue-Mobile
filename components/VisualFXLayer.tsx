@@ -77,20 +77,19 @@ const VisualFXLayer: React.FC<VisualFXLayerProps> = memo(({ slashes, splatters, 
                 {shockwaves.map(wave => (
                     <motion.div
                         key={wave.id}
-                        initial={{ scale: 0, opacity: 1, borderWidth: 60 }}
-                        animate={{ scale: 8, opacity: 0, borderWidth: 0 }}
+                        initial={{ x: '-50%', y: '-50%', scale: 0.2, opacity: 0.9 }}
+                        animate={{ scale: 5, opacity: 0 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
+                        transition={{ duration: 0.45, ease: "easeOut" }}
                         onAnimationComplete={() => onShockwaveComplete && onShockwaveComplete(wave.id)}
-                        className="absolute rounded-full border-white"
+                        className="absolute rounded-full border-4 border-white/80"
                         style={{
                             left: wave.x,
                             top: wave.y,
                             width: 100,
                             height: 100,
-                            transform: 'translate(-50%, -50%)',
                             zIndex: 60,
-                            boxShadow: '0 0 60px 30px rgba(255,255,255,0.9), inset 0 0 30px 15px rgba(255,255,255,0.6)',
+                            boxShadow: '0 0 28px 10px rgba(255,255,255,0.55)',
                             willChange: 'transform, opacity'
                         }}
                     />
@@ -102,14 +101,13 @@ const VisualFXLayer: React.FC<VisualFXLayerProps> = memo(({ slashes, splatters, 
                 {slashes.map(slash => (
                     <motion.div
                         key={slash.id}
-                        initial={{ width: 0, opacity: 1, left: slash.x, top: slash.y, scaleY: 3 }}
-                        animate={{ width: 1000, opacity: 0, left: slash.x - 500, scaleY: 0 }} 
+                        initial={{ opacity: 1, left: slash.x, top: slash.y, x: '-50%', y: '-50%', rotate: slash.angle, scaleX: 0.1, scaleY: 2.2 }}
+                        animate={{ opacity: 0, scaleX: 4.5, scaleY: 0.15 }} 
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        transition={{ duration: 0.22, ease: 'easeOut' }}
                         onAnimationComplete={() => onSlashComplete(slash.id)}
-                        className="absolute h-8 bg-white shadow-[0_0_40px_#fff,0_0_80px_#ef4444]"
+                        className="absolute h-8 w-56 bg-white shadow-[0_0_24px_#fff,0_0_36px_#ef4444]"
                         style={{
-                            transform: `rotate(${slash.angle}deg)`,
                             transformOrigin: 'center',
                             zIndex: 50,
                             borderRadius: '50%',

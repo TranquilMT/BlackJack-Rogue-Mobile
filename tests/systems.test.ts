@@ -70,6 +70,29 @@ function baseState(): GameState {
   };
 }
 
+{
+  const state = {
+    ...baseState(),
+    gamePhase: 'gameOver' as const,
+    deck: [
+      ...Array.from({ length: 10 }, (_, index) => ({
+        id: `filler-${index}`,
+        rank: Rank.Two,
+        suit: Suit.Clubs,
+      })),
+      { id: 'dealer-2', rank: Rank.Seven, suit: Suit.Clubs },
+      { id: 'dealer-1', rank: Rank.Ten, suit: Suit.Spades },
+      { id: 'player-2', rank: Rank.Six, suit: Suit.Clubs },
+      { id: 'player-1', rank: Rank.Five, suit: Suit.Hearts },
+      { id: 'skipped-modifier', rank: Rank.Three, suit: Suit.Diamonds, modifier: CardModifierId.THE_REAPER },
+    ],
+    discardPile: [],
+  };
+
+  const next = gameReducer(state, { type: 'START_NEXT_HAND' });
+  assert.equal(next.discardPile.some(card => card.id === 'skipped-modifier'), true);
+}
+
 withMockedRandom(0, () => {
   const state = createInitialState({
     unlockedRelicIds: [RelicId.GoldenKnuckles],

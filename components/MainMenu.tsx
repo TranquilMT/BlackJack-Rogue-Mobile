@@ -21,7 +21,7 @@ import QuestScreen from './QuestScreen';
 
 interface MainMenuProps {
   onPlay: (startingRelicId?: RelicId | null, mode?: GameMode) => void;
-  onStartTutorial: () => void;
+  onStartTutorial: (returnMode?: GameMode) => void;
   onEnterMultiplayer: () => void;
   setShowPatchNotes: (show: boolean) => void;
   onOpenSkillTree: () => void;
@@ -354,7 +354,7 @@ const MainMenu = ({ onPlay, onStartTutorial, onEnterMultiplayer, setShowPatchNot
                         <button 
                             onClick={() => {
                                 setShowTutorialPrompt(false);
-                                onStartTutorial();
+                                onStartTutorial(selectedMode);
                             }}
                             className="w-full py-3 md:py-4 bg-amber-700 hover:bg-amber-600 text-stone-100 font-black rounded-lg uppercase tracking-widest transition-colors shadow-lg border border-amber-500/30"
                         >

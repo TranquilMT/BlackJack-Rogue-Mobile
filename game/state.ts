@@ -412,6 +412,7 @@ function dealInitialHands(state: GameState): GameState {
             else pCard2 = card;
         }
     }
+    newDiscardPile.push(...tempDiscard);
 
     // Pull base cards for dealer, ensuring they are not modifiers
     let dCard1: Card | undefined;

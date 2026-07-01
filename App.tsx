@@ -23,7 +23,7 @@ import Tutorial from './components/Tutorial';
 import AchievementToast from './components/AchievementToast';
 import { ACHIEVEMENTS } from './game/achievements';
 import type { RelicId, Hand, LootReward, LeaderboardEntry, SoundId, Pact, GameMode, GameState } from './types';
-import { TableLighting, RelicId as RelicIdEnum, WheelOutcome, BoonId, LevelUpChoiceId } from './types';
+import { TableLighting, RelicId as RelicIdEnum, WheelOutcome, BoonId, LevelUpChoiceId, GraphicsQuality } from './types';
 import BoonSelectionScreen from './components/BoonSelectionScreen';
 import SpinWheelScreen from './components/SpinWheelScreen';
 import BoonDisplay from './components/BoonDisplay';
@@ -157,6 +157,7 @@ export default function App() {
   
   const particleSystemRef = useRef<ParticleSystemHandle>(null);
   const hasHandledRunEndRef = useRef<boolean>(false);
+  const tutorialReturnModeRef = useRef<GameMode>('endless');
   
   const [slashes, setSlashes] = useState<SlashParams[]>([]);
   const [splatters, setSplatters] = useState<SplatterParams[]>([]);
@@ -166,10 +167,24 @@ export default function App() {
   const [showDebug, setShowDebug] = useState(false);
     const { shake, triggerShake } = useScreenShake();
 
+    const fxScale = useMemo(() => {
+        const quality = customization.graphicsQuality ?? GraphicsQuality.High;
+        const qualityScale = {
+            [GraphicsQuality.Minimal]: 0.2,
+            [GraphicsQuality.Low]: 0.4,
+            [GraphicsQuality.Medium]: 0.65,
+            [GraphicsQuality.High]: 0.85,
+            [GraphicsQuality.Ultra]: 1,
+        }[quality];
+        return customization.deviceMode === 'mobile' ? Math.min(qualityScale, 0.55) : qualityScale;
+    }, [customization.graphicsQuality, customization.deviceMode]);
+
     // FPS Counter
     useEffect(() => {
+        if (!showDebug) return;
         let frameCount = 0;
         let lastTime = performance.now();
+        let handle = 0;
         const updateFps = () => {
             frameCount++;
             const now = performance.now();
@@ -178,11 +193,11 @@ export default function App() {
                 frameCount = 0;
                 lastTime = now;
             }
-            requestAnimationFrame(updateFps);
+            handle = requestAnimationFrame(updateFps);
         };
-        const handle = requestAnimationFrame(updateFps);
+        handle = requestAnimationFrame(updateFps);
         return () => cancelAnimationFrame(handle);
-    }, []);
+    }, [showDebug]);
 
     const [state, dispatch] = useReducer(gameReducer, undefined, () => {
     const fallbackState = createInitialState({ customization, totalCurrency, relicCurrency, runHistory, unlockedAchievementIds, hasCompletedTutorial, unlockedRelicIds, unlockedSkills } as any);
@@ -238,27 +253,27 @@ export default function App() {
   const gameContainerControls = useAnimation();
   
   const spawnParticles = (count: number, type: 'coin' | 'blood' | 'sparkle', x: number, y: number) => {
-      particleSystemRef.current?.spawn(x, y, type, count);
+      const scaledCount = Math.max(1, Math.round(count * fxScale));
+      particleSystemRef.current?.spawn(x, y, type, scaledCount);
   }
   
   const spawnSlash = (x: number, y: number) => {
       const angle = Math.random() * 360;
-      setSlashes(prev => [...prev, { id: getUniqueId(), x, y, angle }]);
+      setSlashes(prev => [...prev.slice(-3), { id: getUniqueId(), x, y, angle }]);
   };
 
   const spawnSplatter = (x: number, y: number) => {
-      setSplatters(prev => [...prev, { 
+      setSplatters(prev => [...prev.slice(-4), { 
           id: getUniqueId(), 
           x, 
           y, 
           scale: Math.random() * 1.5 + 0.5,
           color: Math.random() > 0.5 ? '#7f1d1d' : '#991b1b' 
       }]);
-      if (splatters.length > 5) setSplatters(prev => prev.slice(1));
   };
 
   const spawnShockwave = (x: number, y: number) => {
-      setShockwaves(prev => [...prev, { id: getUniqueId(), x, y }]);
+      setShockwaves(prev => [...prev.slice(-1), { id: getUniqueId(), x, y }]);
   };
 
   useEffect(() => {
@@ -418,12 +433,19 @@ export default function App() {
   useEffect(() => {
     const isInRun = appPhase === 'inGame' && !['preGame', 'defeat', 'victory', 'tutorial'].includes(gamePhase);
     if (isInRun) {
+        const timeoutId = window.setTimeout(() => {
+            try {
+                localStorage.setItem('blackjackRogueSave', JSON.stringify(state));
+                getSteamService().saveCloudData(state);
+            } catch (e) { console.error("Failed to save game state:", e); }
+        }, 500);
+        return () => window.clearTimeout(timeoutId);
+    }
+
+    if (appPhase === 'inGame' && ['defeat', 'victory'].includes(gamePhase)) {
         try {
-            localStorage.setItem('blackjackRogueSave', JSON.stringify(state));
-            getSteamService().saveCloudData(state);
+            localStorage.removeItem('blackjackRogueSave');
         } catch (e) { console.error("Failed to save game state:", e); }
-    } else {
-        localStorage.removeItem('blackjackRogueSave');
     }
   }, [state, appPhase, gamePhase]);
   
@@ -433,17 +455,25 @@ export default function App() {
   const activeHand = useMemo(() => (gamePhase === 'playerTurn' || gamePhase === 'tutorial') ? playerHands[activeHandIndex] : null, [playerHands, activeHandIndex, gamePhase]);
   
   const measureActiveHand = useCallback(() => {
+    const setIfChanged = (next: {top: number, left: number, width: number} | null) => {
+      setActiveHandPosition(prev => {
+        if (!prev || !next) return next;
+        const unchanged = Math.abs(prev.top - next.top) < 1 && Math.abs(prev.left - next.left) < 1 && Math.abs(prev.width - next.width) < 1;
+        return unchanged ? prev : next;
+      });
+    };
+
     if ((gamePhase === 'playerTurn' || gamePhase === 'tutorial') && activeHandIndex != null) {
       const node = playerHandRefs.current[activeHandIndex];
       if (node) {
         const rect = node.getBoundingClientRect();
         if (rect.width > 0 && rect.height > 0) {
-          setActiveHandPosition({ top: rect.top, left: rect.left, width: rect.width });
+          setIfChanged({ top: rect.top, left: rect.left, width: rect.width });
           return;
         }
       }
       const isMobile = window.innerWidth < 768;
-      setActiveHandPosition({
+      setIfChanged({
           top: window.innerHeight * (isMobile ? 0.55 : 0.65),
           left: window.innerWidth * 0.5 - (isMobile ? 100 : 120),
           width: isMobile ? 200 : 240
@@ -453,14 +483,17 @@ export default function App() {
 
   useEffect(() => {
     if (appPhase === 'inGame' && (gamePhase === 'playerTurn' || gamePhase === 'tutorial')) {
-        measureActiveHand();
-        const interval = setInterval(measureActiveHand, 300);
-        return () => clearInterval(interval);
+        const rafId = requestAnimationFrame(measureActiveHand);
+        window.addEventListener('resize', measureActiveHand);
+        return () => {
+            cancelAnimationFrame(rafId);
+            window.removeEventListener('resize', measureActiveHand);
+        };
     }
     if (gamePhase !== 'playerTurn' && gamePhase !== 'tutorial') {
         setActiveHandPosition(null);
     }
-  }, [appPhase, gamePhase, measureActiveHand]);
+  }, [appPhase, gamePhase, activeHand?.cards.length, activeHandIndex, measureActiveHand]);
 
   const handleRunEnd = useCallback((endedRunStats: typeof runStats) => {
     const newHistory = [...runHistory, endedRunStats].slice(-10);
@@ -552,10 +585,11 @@ export default function App() {
     }
   };
 
-  const handleStartTutorial = () => {
+  const handleStartTutorial = (returnMode: GameMode = 'endless') => {
     audioManager.resume();
     audioManager.playSound('button-click');
     localStorage.removeItem('blackjackRogueSave');
+    tutorialReturnModeRef.current = returnMode;
     dispatch({ type: 'START_TUTORIAL' });
     setAppPhase('inGame');
   };
@@ -563,7 +597,9 @@ export default function App() {
   const handleCompleteTutorial = () => {
     audioManager.playSound('button-click');
     setHasCompletedTutorial(true);
-    dispatch({ type: 'START_NEW_RUN', metaState: { customization, totalCurrency, relicCurrency, runHistory, unlockedAchievementIds, hasCompletedTutorial: true, unlockedRelicIds, unlockedSkills } as any });
+    const metaState = { ...useStore.getState(), hasCompletedTutorial: true };
+    hasHandledRunEndRef.current = false;
+    dispatch({ type: 'START_NEW_RUN', metaState, mode: tutorialReturnModeRef.current });
   }
 
   const handleSelectReward = (relicId: RelicId) => {
@@ -759,8 +795,8 @@ export default function App() {
 
       {showLootChest && lootRewards && <LootChest rewards={lootRewards} onComplete={(rewards) => dispatch({type: 'AWARD_LOOT', rewards})} />}
       {gamePhase === 'tutorial' && <Tutorial dispatch={dispatch} state={state} onComplete={handleCompleteTutorial} activeHandPosition={activeHandPosition} />}
-      {gamePhase === 'defeat' && <GameOverScreen runStats={runStats} onMainMenu={handleGoToMainMenu} dispatch={dispatch} />}
-      {gamePhase === 'victory' && <VictoryScreen dispatch={dispatch} onMainMenu={handleGoToMainMenu} message={state.message === 'Campaign Complete!' ? 'CAMPAIGN COMPLETE' : 'VICTORY'} mode={state.mode} />}
+      {gamePhase === 'defeat' && <GameOverScreen runStats={runStats} onMainMenu={handleGoToMainMenu} onTryAgain={() => handlePlay(null, state.mode)} />}
+      {gamePhase === 'victory' && <VictoryScreen onMainMenu={handleGoToMainMenu} onPlayAgain={() => handlePlay(null, state.mode)} message={state.message === 'Campaign Complete!' ? 'CAMPAIGN COMPLETE' : 'VICTORY'} />}
       {gamePhase === 'reward' && <RewardScreen choices={rewardChoices} onSelect={handleSelectReward} />}
       {gamePhase === 'strangerEncounter' && <StrangerEncounterScreen choices={strangerChoices} onSelect={(pact: Pact) => dispatch({ type: 'SELECT_PACT', pact })} />}
       {gamePhase === 'curseSelection' && <CurseSelectionScreen choices={curseChoices} onSelect={(curseId) => dispatch({ type: 'SELECT_CURSE', curseId })} />}
@@ -795,7 +831,7 @@ export default function App() {
       {appPhase === 'inGame' && state.gamePhase !== 'cutscene' && (
         <>
           <VisualFXLayer slashes={slashes} splatters={splatters} onSlashComplete={handleSlashComplete} isBossStunned={isBossStunned} shockwaves={shockwaves} onShockwaveComplete={handleShockwaveComplete} />
-          <ParticleSystem ref={particleSystemRef} />
+          <ParticleSystem ref={particleSystemRef} graphicsQuality={customization.graphicsQuality} />
           <div className="absolute inset-0 z-[90] pointer-events-none">
               <CombatText queue={combatTextQueue} onClear={handleCombatTextClear} />
           </div>
