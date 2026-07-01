@@ -1,0 +1,5 @@
+{
+  "name": "Blackjack Rogue",
+  "description": "A roguelike combat game where Blackjack is your weapon. Face off against a powerful boss, using hits, stands, and splits to deal damage and deplete their HP. No betting, only battle.",
+  "requestFramePermissions": []
+}
